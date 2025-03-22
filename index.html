@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Hello World Add-in</title>
-  <link rel="stylesheet" type="text/css" href="content/style.css">
+    <title>Hello World Add-in</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: blue;
+        }
+        p {
+            color: green;
+        }
+    </style>
+    <!-- Add Office.js for proper initialization -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Hello World SharePoint...</h1>
-  </div>
+    <h1>Hello World!</h1>
+    <p>This is my first add-in!</p>
+
+    <script>
+        // Initialize Office.js
+        (function () {
+            Office.onReady(function() {
+                console.log("Add-in loaded!");
+            });
+        })();
+    </script>
 </body>
 </html>
-
 <!-- <?xml version="1.0" encoding="utf-8"?>
 <App xmlns="http://schemas.microsoft.com/sharepoint/2012/app/manifest"
      Name="HelloWorldAddin"
