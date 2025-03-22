@@ -1,0 +1,274 @@
+
+    This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="TaskPaneApp">
+<!--  Begin Basic Settings: Add-in metadata, used for all versions of Office unless override provided.  -->
+<!--  IMPORTANT! Id must be unique for your add-in, if you reuse this manifest ensure that you change this id to a new GUID.  -->
+<Id>d077e271-66bd-457a-af8e-31328595ec78</Id>
+<!-- Version. Updates from the store only get triggered if there is a version change.  -->
+<Version>1.0</Version>
+<ProviderName>VPPL</ProviderName>
+<DefaultLocale>en-US</DefaultLocale>
+<!--  The display name of your add-in. Used on the store and various places of the Office UI such as the add-ins dialog.  -->
+<DisplayName DefaultValue="Volody-Baxy-UAT"/>
+<Description DefaultValue="Volody-Baxy-UAT"/>
+<!--  Icon for your add-in. Used on installation screens and the add-ins dialog.  -->
+<IconUrl DefaultValue="https://uat-baxy.volody.com/img/add-ins/assets/favicon.png"/>
+<HighResolutionIconUrl DefaultValue="https://uat-baxy.volody.com/img/add-ins/assets/favicon.png"/>
+<!-- If you plan to submit this add-in to the Office Store, uncomment the SupportUrl element below -->
+<!-- <SupportUrl DefaultValue="[Insert the URL of a page that provides support information for the app]" /> -->
+<!--  Domains that will be allowed when navigating. For example, if you use ShowTaskpane and then have an href link, navigation will only be allowed if the domain is on this list.  -->
+<AppDomains>
+<AppDomain>https://uat-baxy.volody.com</AppDomain>
+</AppDomains>
+<!-- End Basic Settings.  -->
+<!-- Begin TaskPane Mode integration. This section is used if there are no VersionOverrides or if the Office client version does not support add-in commands.  -->
+<Hosts>
+<Host Name="Document"/>
+</Hosts>
+<DefaultSettings>
+<SourceLocation DefaultValue="https://uat-baxy.volody.com/officeaddin"/>
+</DefaultSettings>
+<Permissions>ReadWriteDocument</Permissions>
+<!--  End TaskPane Mode integration.   -->
+<!--  Begin Add-in Commands Mode integration.  -->
+<VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+<!--  The Hosts node is required.  -->
+<Hosts>
+<!--  Each host can have a different set of commands.  -->
+<!--  Excel host is Workbook, Word host is Document, and PowerPoint host is Presentation.  -->
+<!--  Make sure the hosts you override match the hosts declared in the top section of the manifest.  -->
+<Host xsi:type="Document">
+<!--  Form factor. Currently only DesktopFormFactor is supported.  -->
+<DesktopFormFactor>
+<!-- "This code enables a customizable message to be displayed when the add-in is loaded successfully upon individual install." -->
+<GetStarted>
+<!--  Title of the Getting Started callout. resid points to a ShortString resource  -->
+<Title resid="GetStarted.Title"/>
+<!--  Description of the Getting Started callout. resid points to a LongString resource  -->
+<Description resid="GetStarted.Description"/>
+<!--  Point to a url resource which details how the add-in should be used.  -->
+<LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
+</GetStarted>
+<!--  Function file is a HTML page that includes the JavaScript where functions for ExecuteAction will be called.
+            Think of the FunctionFile as the code behind ExecuteFunction.  -->
+<FunctionFile resid="Commands.Url"/>
+<!--  PrimaryCommandSurface is the main Office Ribbon.  -->
+<ExtensionPoint xsi:type="PrimaryCommandSurface">
+<!--  Use OfficeTab to extend an existing Tab. Use CustomTab to create a new tab.  -->
+<CustomTab id="TabVolody">
+<!--  Ensure you provide a unique id for the group. Recommendation for any IDs is to namespace using your company name.  -->
+<Group id="CommandsGroup">
+<!--  Label for your group. resid must point to a ShortString resource.  -->
+<Label resid="CommandsGroup.Label"/>
+<!--  Icons. Required sizes 16,32,80, optional 20, 24, 40, 48, 64. Strongly recommended to provide all sizes for great UX.  -->
+<!--  Use PNG icons. All URLs on the resources section must use HTTPS.  -->
+<Icon>
+<bt:Image size="16" resid="VolodyIcon.16x16"/>
+<bt:Image size="32" resid="VolodyIcon.32x32"/>
+<bt:Image size="80" resid="VolodyIcon.80x80"/>
+</Icon>
+<!--  Start Clause Library  -->
+<Control xsi:type="Button" id="ClauseTab">
+<Label resid="ClauseTab.Label"/>
+<Supertip>
+<Title resid="ClauseTab.Label"/>
+<Description resid="ClauseTab.Tooltip"/>
+</Supertip>
+<Icon>
+<bt:Image size="16" resid="ClauseIcon.16x16"/>
+<bt:Image size="32" resid="ClauseIcon.32x32"/>
+<bt:Image size="80" resid="ClauseIcon.80x80"/>
+</Icon>
+<Action xsi:type="ShowTaskpane">
+<TaskpaneId>ButtonId2</TaskpaneId>
+<SourceLocation resid="ClauseTab.Url"/>
+</Action>
+</Control>
+<!--  End Clause Library  -->
+<!--  Start Clause Suggestion  -->
+<Control xsi:type="Button" id="SuggestionTab">
+<Label resid="SuggestionTab.Label"/>
+<Supertip>
+<Title resid="SuggestionTab.Label"/>
+<Description resid="SuggestionTab.Tooltip"/>
+</Supertip>
+<Icon>
+<bt:Image size="16" resid="SuggestionIcon.16x16"/>
+<bt:Image size="32" resid="SuggestionIcon.32x32"/>
+<bt:Image size="80" resid="SuggestionIcon.80x80"/>
+</Icon>
+<Action xsi:type="ShowTaskpane">
+<TaskpaneId>ButtonId3</TaskpaneId>
+<SourceLocation resid="SuggestionTab.Url"/>
+</Action>
+</Control>
+<!--  End Clause Suggestion  -->
+<!--  Start RiskMetrics  -->
+<Control xsi:type="Button" id="RiskmetricsTab">
+<Label resid="RiskmetricsTab.Label"/>
+<Supertip>
+<Title resid="RiskmetricsTab.Label"/>
+<Description resid="RiskmetricsTab.Tooltip"/>
+</Supertip>
+<Icon>
+<bt:Image size="16" resid="RiskIcon.16x16"/>
+<bt:Image size="32" resid="RiskIcon.32x32"/>
+<bt:Image size="80" resid="RiskIcon.80x80"/>
+</Icon>
+<Action xsi:type="ShowTaskpane">
+<TaskpaneId>ButtonId4</TaskpaneId>
+<SourceLocation resid="RiskmetricsTab.Url"/>
+</Action>
+</Control>
+<!--  Start Obligation  -->
+<Control xsi:type="Button" id="ObligationTab">
+<Label resid="ObligationTab.Label"/>
+<Supertip>
+<!--  ToolTip title. resid must point to a ShortString resource.  -->
+<Title resid="ObligationTab.Label"/>
+<!--  ToolTip description. resid must point to a LongString resource.  -->
+<Description resid="ObligationTab.Tooltip"/>
+</Supertip>
+<Icon>
+<bt:Image size="16" resid="ObliIcon.16x16"/>
+<bt:Image size="32" resid="ObliIcon.32x32"/>
+<bt:Image size="80" resid="ObliIcon.80x80"/>
+</Icon>
+<!--  This is what happens when the command is triggered (E.g. click on the Ribbon). Supported actions are ExecuteFunction or ShowTaskpane.  -->
+<Action xsi:type="ShowTaskpane">
+<TaskpaneId>ButtonId6</TaskpaneId>
+<!--  Provide a url resource id for the location that will be displayed on the task pane.  -->
+<SourceLocation resid="ObligationTab.Url"/>
+</Action>
+</Control>
+<!--  End Obligation  -->
+<!--  Start TrackChanges  -->
+<Control xsi:type="Button" id="TrackchangesTab">
+<Label resid="TrackchangesTab.Label"/>
+<Supertip>
+<Title resid="TrackchangesTab.Label"/>
+<Description resid="TrackchangesTab.Tooltip"/>
+</Supertip>
+<Icon>
+<bt:Image size="16" resid="TrackIcon.16x16"/>
+<bt:Image size="32" resid="TrackIcon.32x32"/>
+<bt:Image size="80" resid="TrackIcon.80x80"/>
+</Icon>
+<Action xsi:type="ShowTaskpane">
+<TaskpaneId>ButtonId7</TaskpaneId>
+<SourceLocation resid="TrackchangesTab.Url"/>
+</Action>
+</Control>
+<!--  End Clause Summary  -->
+</Group>
+<Label resid="customTabLabel"/>
+</CustomTab>
+</ExtensionPoint>
+</DesktopFormFactor>
+</Host>
+</Hosts>
+<!--  You can use resources across hosts and form factors.  -->
+<Resources>
+<bt:Images>
+<bt:Image id="VolodyIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/favicon.png"/>
+<bt:Image id="VolodyIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/favicon.png"/>
+<bt:Image id="VolodyIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/favicon.png"/>
+<bt:Image id="ClauseIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/ClauseIcon_16.png"/>
+<bt:Image id="ClauseIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/ClauseIcon_32.png"/>
+<bt:Image id="ClauseIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/ClauseIcon_80.png"/>
+<bt:Image id="SuggestionIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/SuggestionIcon_16.png"/>
+<bt:Image id="SuggestionIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/SuggestionIcon_32.png"/>
+<bt:Image id="SuggestionIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/SuggestionIcon_80.png"/>
+<bt:Image id="RiskIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskIcon_16.png"/>
+<bt:Image id="RiskIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskIcon_32.png"/>
+<bt:Image id="RiskIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskIcon_80.png"/>
+<bt:Image id="MetaIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_16.png"/>
+<bt:Image id="MetaIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_32.png"/>
+<bt:Image id="MetaIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_80.png"/>
+<bt:Image id="ObliIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/ObliIcon_16.png"/>
+<bt:Image id="ObliIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/ObliIcon_32.png"/>
+<bt:Image id="ObliIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/ObliIcon_80.png"/>
+<bt:Image id="TrackIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/TrackIcon_16.png"/>
+<bt:Image id="TrackIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/TrackIcon_32.png"/>
+<bt:Image id="TrackIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/TrackIcon_80.png"/>
+<bt:Image id="RiskAnalysisIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskAnalysisIcon_16.png"/>
+<bt:Image id="RiskAnalysisIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskAnalysisIcon_32.png"/>
+<bt:Image id="RiskAnalysisIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskAnalysisIcon_80.png"/>
+<bt:Image id="RiskAnalysisIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskAnalysisIcon_16.png"/>
+<bt:Image id="RiskAnalysisIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskAnalysisIcon_32.png"/>
+<bt:Image id="RiskAnalysisIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/RiskAnalysisIcon_80.png"/>
+<bt:Image id="ClauseAnalysisIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/SuggestionIcon_16.png"/>
+<bt:Image id="ClauseAnalysisIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/SuggestionIcon_32.png"/>
+<bt:Image id="ClauseAnalysisIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/SuggestionIcon_80.png"/>
+<bt:Image id="ClauseSummaryIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_16.png"/>
+<bt:Image id="ClauseSummaryIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_32.png"/>
+<bt:Image id="ClauseSummaryIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_80.png"/>
+<bt:Image id="ClauseSummarySelIcon.16x16" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_16.png"/>
+<bt:Image id="ClauseSummarySelIcon.32x32" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_32.png"/>
+<bt:Image id="ClauseSummarySelIcon.80x80" DefaultValue="https://uat-baxy.volody.com/img/add-ins/MetaIcon_80.png"/>
+</bt:Images>
+<bt:Urls>
+<bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://uat-baxy.volody.com/officeaddin"/>
+<bt:Url id="Commands.Url" DefaultValue="https://uat-baxy.volody.com/officeaddin"/>
+<bt:Url id="ClauseTab.Url" DefaultValue="https://uat-baxy.volody.com/officeclauselibrary"/>
+<bt:Url id="SuggestionTab.Url" DefaultValue="https://uat-baxy.volody.com/officeclausesuggestion"/>
+<bt:Url id="RiskmetricsTab.Url" DefaultValue="https://uat-baxy.volody.com/officeriskmetrics"/>
+<bt:Url id="MetadataTab.Url" DefaultValue="https://uat-baxy.volody.com/officemetadata"/>
+<bt:Url id="ObligationTab.Url" DefaultValue="https://uat-baxy.volody.com/officeobligation"/>
+<bt:Url id="TrackchangesTab.Url" DefaultValue="https://uat-baxy.volody.com/officetrackchanges"/>
+<bt:Url id="RiskanalysisRTab.Url" DefaultValue="https://uat-baxy.volody.com/officeriskanalysis"/>
+<bt:Url id="RiskanalysisDTab.Url" DefaultValue="https://uat-baxy.volody.com/officeriskanalysisdummy"/>
+<bt:Url id="ClauseAnalysisTab.Url" DefaultValue="https://uat-baxy.volody.com/officeclauseanalysis"/>
+<bt:Url id="ClauseSummaryTab.Url" DefaultValue="https://uat-baxy.volody.com/officecontractsummary"/>
+<bt:Url id="ClauseSummarySelTab.Url" DefaultValue="https://uat-baxy.volody.com/officecontractsummarysel"/>
+</bt:Urls>
+<!--  ShortStrings max characters==125.  -->
+<bt:ShortStrings>
+<bt:String id="GetStarted.Title" DefaultValue="Get started with your Volody Smart Playbook!"/>
+<bt:String id="CommandsGroup.Label" DefaultValue="Volody Group"/>
+<bt:String id="ClauseTab.Label" DefaultValue="Clause Library"/>
+<bt:String id="SuggestionTab.Label" DefaultValue="Clause Suggestions"/>
+<bt:String id="RiskmetricsTab.Label" DefaultValue="Risky Clauses"/>
+<bt:String id="MetadataTab.Label" DefaultValue="Metadata"/>
+<bt:String id="ObligationTab.Label" DefaultValue="Obligation"/>
+<bt:String id="TrackchangesTab.Label" DefaultValue="Clause Collaboration"/>
+<bt:String id="RiskanalysisRTab.Label" DefaultValue="Risk Analysis R"/>
+<bt:String id="RiskanalysisDTab.Label" DefaultValue="Risk Analysis D"/>
+<bt:String id="ClauseAnalysisTab.Label" DefaultValue="Clause Analysis"/>
+<bt:String id="ClauseSummaryTab.Label" DefaultValue="Clause Summary"/>
+<bt:String id="ClauseSummarySelTab.Label" DefaultValue="Clause Summary Select"/>
+<bt:String id="RiskAnalysis.Label" DefaultValue="Risk Analysis"/>
+<bt:String id="customTabLabel" DefaultValue="Volody-Baxy-UAT"/>
+</bt:ShortStrings>
+<!--  LongStrings max characters==250.  -->
+<bt:LongStrings>
+<bt:String id="GetStarted.Description" DefaultValue="Volody Smart Playbook loaded succesfully. Go to the VOLODY tab to get started."/>
+<bt:String id="ClauseTab.Tooltip" DefaultValue="Click to Show Clause Library Pane"/>
+<bt:String id="SuggestionTab.Tooltip" DefaultValue="Click to Show Clause Suggestions Pane"/>
+<bt:String id="RiskmetricsTab.Tooltip" DefaultValue="Click to Show Risky Clauses Pane"/>
+<bt:String id="MetadataTab.Tooltip" DefaultValue="Click to Show Metadata Pane"/>
+<bt:String id="ObligationTab.Tooltip" DefaultValue="Click to Show Obligation Pane"/>
+<bt:String id="TrackchangesTab.Tooltip" DefaultValue="Click to Show Clause Collaboration Pane"/>
+<bt:String id="RiskanalysisRTab.Tooltip" DefaultValue="Click to Show Risk Analysis Real Pane"/>
+<bt:String id="RiskanalysisDTab.Tooltip" DefaultValue="Click to Show Risk Analysis Dummy Pane"/>
+<bt:String id="ClauseAnalysisTab.Tooltip" DefaultValue="Click to Show Clause Analysis Pane"/>
+<bt:String id="ClauseSummaryTab.Tooltip" DefaultValue="Click to Show Clause Summary"/>
+<bt:String id="ClauseSummarySelTab.Tooltip" DefaultValue="Click to Show Clause Summary Select"/>
+<bt:String id="RiskAnalysis.Tooltip" DefaultValue="Click to Show Risk Analysis Pane"/>
+</bt:LongStrings>
+</Resources>
+<WebApplicationInfo>
+<Id>ce83b8ce-748e-4241-bc1f-94a5e69a1d60</Id>
+<Resource>api://uat-baxy.volody.com/ce83b8ce-748e-4241-bc1f-94a5e69a1d60</Resource>
+<Scopes>
+<Scope>openid</Scope>
+<Scope>user.read</Scope>
+<Scope>profile</Scope>
+<Scope>files.read</Scope>
+<Scope>email</Scope>
+<Scope>Files.ReadWrite.All</Scope>
+</Scopes>
+</WebApplicationInfo>
+</VersionOverrides>
+<!--  End Add-in Commands Mode integration.  -->
+</OfficeApp>

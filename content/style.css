@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
+    padding-top: 100px;
+  }
+  
+  .container h1 {
+    font-size: 48px;
+    color: #0078d4;
+  }
+  
