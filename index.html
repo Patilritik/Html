@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Hello World Add-in</title>
-  <link rel="stylesheet" type="text/css" href="./style.css">
+  <title>ConvergeLego Add-in</title>
   <style>
-    /* Basic styling for the form */
     .container {
       max-width: 600px;
-      margin: 50px auto;
+      margin: 20px auto;
       padding: 20px;
       font-family: Arial, sans-serif;
       text-align: center;
     }
     h1 {
       color: #2c3e50;
-    }
-    p {
-      color: #7f8c8d;
-      line-height: 1.6;
+      font-size: 24px;
     }
     .form-group {
       margin-bottom: 15px;
@@ -51,14 +46,17 @@
     input[type="submit"]:hover {
       background-color: #2980b9;
     }
+    #status {
+      margin-top: 15px;
+      color: #2c3e50;
+    }
   </style>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>ConvergeLego Addin</h1>
-    
-    <!-- Form for Name, Email, and Phone Number -->
-    <form action="#" method="POST">
+    <h1>ConvergeLego Add-in</h1>
+    <form id="userForm">
       <div class="form-group">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" placeholder="Enter your name" required>
@@ -73,6 +71,43 @@
       </div>
       <input type="submit" value="Submit">
     </form>
+    <div id="status"></div>
   </div>
+
+  <script>
+    Office.onReady((info) => {
+      if (info.host === Office.HostType.Word) {
+        document.getElementById("userForm").onsubmit = function(event) {
+          event.preventDefault();
+          insertDetailsIntoDocument();
+        };
+      }
+    });
+
+    function insertDetailsIntoDocument() {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const phone = document.getElementById("phone").value;
+      const statusDiv = document.getElementById("status");
+
+      if (!name || !email || !phone) {
+        statusDiv.innerText = "Please fill out all fields.";
+        return;
+      }
+
+      Word.run(async (context) => {
+        const document = context.document;
+        const range = document.getSelection();
+        const details = `Name: ${name}\nEmail: ${email}\nPhone: ${phone}\n\n`;
+        range.insertText(details, Word.InsertLocation.end);
+        await context.sync();
+        statusDiv.innerText = "Details inserted successfully!";
+        document.getElementById("userForm").reset();
+      }).catch((error) => {
+        console.error("Error:", error);
+        statusDiv.innerText = "Error inserting details.";
+      });
+    }
+  </script>
 </body>
 </html>
