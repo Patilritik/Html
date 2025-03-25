@@ -35,7 +35,7 @@ Office.onReady(async () => {
         const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=${ComCode}&status=${status}`;
 
         try {
-            departmentStatus.textContent = "Loading departments...";
+            // departmentStatus.textContent = "Loading departments...";
             const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
@@ -78,16 +78,16 @@ Office.onReady(async () => {
                     }
                 } else {
                     departmentSelect.innerHTML = `<option value="">No departments found</option>`;
-                    departmentStatus.textContent = "No departments available.";
+                    // departmentStatus.textContent = "No departments available.";
                 }
             } else {
                 departmentSelect.innerHTML = `<option value="">No departments found</option>`;
-                departmentStatus.textContent = "Failed to load departments.";
+                // departmentStatus.textContent = "Failed to load departments.";
             }
         } catch (error) {
             console.error("Error fetching department list:", error);
             departmentSelect.innerHTML = `<option value="">No departments found</option>`;
-            departmentStatus.textContent = "Error loading departments.";
+            // departmentStatus.textContent = "Error loading departments.";
         }
     }
 
@@ -96,7 +96,7 @@ Office.onReady(async () => {
         const apiUrl = `https://lapi.convergelego.com/api/STDAgreementType/MstAgTypelist?comcode=${ComCode}&depid=${deptId}`;
         try {
             agreementTypeSelect.disabled = false; // Enable the dropdown
-            agreementStatus.textContent = "Loading agreement types...";
+            // agreementStatus.textContent = "Loading agreement types...";
             const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
@@ -130,19 +130,19 @@ Office.onReady(async () => {
                         option.textContent = agreement.AgTypeName || agreement.AgTypeId; // Use AgTypeName if available, else AgTypeId
                         agreementTypeSelect.appendChild(option);
                     });
-                    agreementStatus.textContent = "";
+                    // agreementStatus.textContent = "";
                 } else {
                     agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
-                    agreementStatus.textContent = "No agreement types available.";
+                    // agreementStatus.textContent = "No agreement types available.";
                 }
             } else {
                 agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
-                agreementStatus.textContent = "Failed to load agreement types.";
+                // agreementStatus.textContent = "Failed to load agreement types.";
             }
         } catch (error) {
             console.error("Error fetching agreement type list:", error);
             agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
-            agreementStatus.textContent = "Error loading agreement types.";
+            // agreementStatus.textContent = "Error loading agreement types.";
         }
 
         // Update Proceed button state
@@ -168,7 +168,7 @@ Office.onReady(async () => {
             // Clear agreement type dropdown if no department is selected
             agreementTypeSelect.innerHTML = `<option value="">Select a department first</option>`;
             agreementTypeSelect.disabled = true;
-            agreementStatus.textContent = "";
+            // agreementStatus.textContent = "";
             proceedBtn.disabled = true;
         }
     });
