@@ -19,6 +19,9 @@ Office.onReady(async () => {
     const userInfoDiv = document.getElementById("userInfo");
     const departmentSelect = document.getElementById("department");
     const agreementTypeSelect = document.getElementById("agreementType");
+    const departmentStatus = document.getElementById("departmentStatus");
+    const agreementStatus = document.getElementById("agreementStatus");
+    const proceedBtn = document.getElementById("proceedBtn");
 
     // Check if login data exists
     if (!loginData) {
@@ -30,7 +33,9 @@ Office.onReady(async () => {
     // Function to fetch and populate department list
     async function fetchDepartmentList() {
         const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=${ComCode}&status=${status}`;
+
         try {
+            departmentStatus.textContent = "Loading departments...";
             const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
@@ -73,21 +78,25 @@ Office.onReady(async () => {
                     }
                 } else {
                     departmentSelect.innerHTML = `<option value="">No departments found</option>`;
+                    departmentStatus.textContent = "No departments available.";
                 }
             } else {
                 departmentSelect.innerHTML = `<option value="">No departments found</option>`;
+                departmentStatus.textContent = "Failed to load departments.";
             }
         } catch (error) {
             console.error("Error fetching department list:", error);
             departmentSelect.innerHTML = `<option value="">No departments found</option>`;
+            departmentStatus.textContent = "Error loading departments.";
         }
     }
 
     // Function to fetch and populate agreement type list based on selected department
     async function fetchAgreementTypeList(deptId) {
-        const apiUrl = `https://lapi.convergelego.com/api/STD/AgreementType/MstAgTypelist?comcode=${ComCode}&depid=${deptId}`;
-
+        const apiUrl = `https://lapi.convergelego.com/api/STDAgreementType/MstAgTypelist?comcode=${ComCode}&depid=${deptId}`;
         try {
+            agreementTypeSelect.disabled = false; // Enable the dropdown
+            agreementStatus.textContent = "Loading agreement types...";
             const response = await fetch(apiUrl, {
                 method: "GET",
                 headers: {
@@ -117,20 +126,34 @@ Office.onReady(async () => {
                     // Populate dropdown with agreement type list
                     agreementTypes.forEach(agreement => {
                         const option = document.createElement("option");
-                        option.value = agreement.AgTypeId; // Use AgTypeId as the value (adjust based on actual response)
+                        option.value = agreement.AgTypeId; // Use AgTypeId as the value
                         option.textContent = agreement.AgTypeName || agreement.AgTypeId; // Use AgTypeName if available, else AgTypeId
                         agreementTypeSelect.appendChild(option);
                     });
+                    agreementStatus.textContent = "";
                 } else {
                     agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
+                    agreementStatus.textContent = "No agreement types available.";
                 }
             } else {
                 agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
+                agreementStatus.textContent = "Failed to load agreement types.";
             }
         } catch (error) {
             console.error("Error fetching agreement type list:", error);
             agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
+            agreementStatus.textContent = "Error loading agreement types.";
         }
+
+        // Update Proceed button state
+        updateProceedButtonState();
+    }
+
+    // Function to update the Proceed button state
+    function updateProceedButtonState() {
+        const deptSelected = departmentSelect.value !== "";
+        const agreementSelected = agreementTypeSelect.value !== "";
+        proceedBtn.disabled = !(deptSelected && agreementSelected);
     }
 
     // Fetch department list on page load
@@ -143,7 +166,23 @@ Office.onReady(async () => {
             fetchAgreementTypeList(selectedDeptId);
         } else {
             // Clear agreement type dropdown if no department is selected
-            agreementTypeSelect.innerHTML = `<option value="">Select Agreement Type</option>`;
+            agreementTypeSelect.innerHTML = `<option value="">Select a department first</option>`;
+            agreementTypeSelect.disabled = true;
+            agreementStatus.textContent = "";
+            proceedBtn.disabled = true;
         }
+    });
+
+    // Add event listener to agreement type dropdown to update Proceed button state
+    agreementTypeSelect.addEventListener("change", () => {
+        updateProceedButtonState();
+    });
+
+    // Add event listener to Proceed button (placeholder for future functionality)
+    proceedBtn.addEventListener("click", () => {
+        const selectedDeptId = departmentSelect.value;
+        const selectedAgreementId = agreementTypeSelect.value;
+        alert(`Proceeding with Department ID: ${selectedDeptId}, Agreement Type ID: ${selectedAgreementId}`);
+        // Add your logic here (e.g., fetch clauses based on selections and insert into Word)
     });
 });
