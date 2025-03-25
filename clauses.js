@@ -1,5 +1,14 @@
+
+console.log("Before office on ready");
+
+
 Office.onReady(() => {
     // Retrieve login data from localStorage
+    console.log("Office on ready");
+    if (!localStorage.getItem("loginData")) {
+        console.log("No login data found");
+        return;
+    }
     const loginData = JSON.parse(localStorage.getItem("loginData"));
     console.log("Login dataaaaaaaaa:", loginData);
     const userInfoDiv = document.getElementById("userInfo");
