@@ -94,10 +94,10 @@ Office.onReady(() => {
 
             const result = await res.json();
             console.log("Login result:", result);
-            if (result.status === 200) {
+            if (result?.status === 200) {
                 // Successful login, navigate based on type
                 console.log("Login successful. Redirecting...", type);
-                localStorage.setItem("loginData", result.Detail.data);
+                localStorage.setItem("loginData", result?.Detail?.data);
                 if (type === "clauses") {
                     window.location.href = "clauses.html";
                 } else if (type === "ai") {
