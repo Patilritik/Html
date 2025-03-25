@@ -126,8 +126,8 @@ Office.onReady(async () => {
                     // Populate dropdown with agreement type list
                     agreementTypes.forEach(agreement => {
                         const option = document.createElement("option");
-                        option.value = agreement.AgTypeId; // Use AgTypeId as the value
-                        option.textContent = agreement.AgTypeName || agreement.AgTypeId; // Use AgTypeName if available, else AgTypeId
+                        option.value = agreement.Agtypeid; // Use AgTypeId as the value
+                        option.textContent = agreement.AgtypeDesc || agreement.Agtypeid; // Use AgTypeName if available, else AgTypeId
                         agreementTypeSelect.appendChild(option);
                     });
                     // agreementStatus.textContent = "";
