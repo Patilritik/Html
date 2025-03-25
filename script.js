@@ -93,8 +93,8 @@ Office.onReady(() => {
             });
 
             const result = await res.json();
-
-            if (res.status === 200) {
+            console.log("Login result:", result);
+            if (result.status === 200) {
                 // Successful login, navigate based on type
                 console.log("Login successful. Redirecting...", type);
                 if (type === "clauses") {
