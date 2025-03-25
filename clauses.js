@@ -1,6 +1,6 @@
 console.log("Before Office.onReady");
 
-Office.onReady(() => {
+Office.onReady(async () => {
     console.log("Office.onReady triggered");
 
     // Retrieve login data from localStorage
@@ -27,67 +27,58 @@ Office.onReady(() => {
         return;
     }
 
-    // Display login data in the userInfo section (uncomment if needed)
-    // userInfoDiv.innerHTML = `
-    //     <p><strong>Login ID:</strong> ${loginData.loginid}</p>
-    //     <p><strong>Employee Name:</strong> ${loginData.Empname}</p>
-    //     <p><strong>Company Code:</strong> ${loginData.comcode}</p>
-    //     <p><strong>Company Name:</strong> ${loginData.CompanyName}</p>
-    //     <p><strong>Department ID:</strong> ${loginData.Depid}</p>
-    //     <p><strong>User Type:</strong> ${loginData.Utype}</p>
-    // `;
-
     // Fetch department list from API
     const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=${ComCode}&status=${status}`;
-                    https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=KARAM&status=1
-    fetch(apiUrl, {
-        method: "GET",
-        headers: {
-            "Userid": UserId,
-            "Key": "0",
-            "Comcode": ComCode
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Department list response:", data);
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+                "Userid": UserId,
+                "Key": "0",
+                "Comcode": ComCode
+            }
+        });
+
+        const result = await response.json();
+        console.log("Department list response:", result);
 
         // Clear "Loading..." option
         departmentSelect.innerHTML = "";
 
-        // Check if data is an array and has items
-        if (Array.isArray(data) && data.length > 0) {
+        // Check if result.status == 200
+        if (result.status == 200) {
             // Add a default "Select Department" option
             const defaultOption = document.createElement("option");
             defaultOption.value = "";
             defaultOption.textContent = "Select Department";
             departmentSelect.appendChild(defaultOption);
 
-            // Populate dropdown with department list
-            data.forEach(department => {
-                const option = document.createElement("option");
-                option.value = department.DeptId; // Assuming Depid is the department ID
-                option.textContent = department.DeptName || department.DeptId; // Use Depname if available, else Depid
-                departmentSelect.appendChild(option);
-            });
+            // Assuming the department list is in result.data (adjust based on actual API response structure)
+            const departments = result.data || [];
+            if (Array.isArray(departments) && departments.length > 0) {
+                // Populate dropdown with department list
+                departments.forEach(department => {
+                    const option = document.createElement("option");
+                    option.value = department.DeptId; // Use DeptId as the value
+                    option.textContent = department.DeptName || department.DeptId; // Use DeptName if available, else DeptId
+                    departmentSelect.appendChild(option);
+                });
 
-            // Optionally pre-select the user's department if available in loginData
-            if (loginData.Depid) {
-                departmentSelect.value = loginData.Depid;
+                // Optionally pre-select the user's department if available in loginData
+                if (loginData.Depid) {
+                    departmentSelect.value = loginData.Depid;
+                }
+            } else {
+                departmentSelect.innerHTML = `<option value="">No departments found</option>`;
             }
         } else {
             departmentSelect.innerHTML = `<option value="">No departments found</option>`;
         }
-    })
-    .catch(error => {
+    } catch (error) {
         console.error("Error fetching department list:", error);
-        departmentSelect.innerHTML = `<option value="">Error loading departments</option>`;
-    });
+        departmentSelect.innerHTML = `<option value="">No departments found</option>`;
+    }
 
     // Populate agreementType dropdown (placeholder for now)
     agreementTypeSelect.innerHTML = ""; // Clear "Loading..." option
