@@ -55,7 +55,7 @@ Office.onReady(async () => {
             departmentSelect.appendChild(defaultOption);
 
             // Assuming the department list is in result.data (adjust based on actual API response structure)
-            const departments = result.data || [];
+            const departments = result?.Detail?.data || [];
             if (Array.isArray(departments) && departments.length > 0) {
                 // Populate dropdown with department list
                 departments.forEach(department => {
