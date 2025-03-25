@@ -11,7 +11,7 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="ConvergeLego Add-in" />
   <Description DefaultValue="Inserts clauses and AI-generated content into a Word document." />
-  <IconUrl DefaultValue="https://cdn-icons-png.flaticon.com/512/3342/3342137.png"/>
+  <IconUrl DefaultValue="./assets/logo-legal.png"/>
 
   <AppDomains>
     <AppDomain>https://html-zqoo.vercel.app</AppDomain>
