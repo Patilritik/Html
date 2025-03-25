@@ -105,9 +105,9 @@ Office.onReady(async () => {
                     "Comcode": ComCode
                 }
             });
-
+            console.log("Agreement type list response before:", response);
             const result = await response.json();
-            console.log("Agreement type list response:", result);
+            console.log("Agreement type list response after:", result);
 
             // Clear "Loading..." option
             agreementTypeSelect.innerHTML = "";
