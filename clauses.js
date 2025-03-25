@@ -1,6 +1,7 @@
 Office.onReady(() => {
     // Retrieve login data from localStorage
     const loginData = JSON.parse(localStorage.getItem("loginData"));
+    console.log("Login dataaaaaaaaa:", loginData);
     const userInfoDiv = document.getElementById("userInfo");
     const departmentSelect = document.getElementById("department");
     const agreementTypeSelect = document.getElementById("agreementType");
