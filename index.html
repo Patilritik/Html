@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>ConvergeLego Add-in</title>
@@ -112,5 +112,37 @@
       });
     }
   </script>
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ConvergeLego Add-in</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Login to ConvergeLego</h1>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <input type="submit" value="Login" />
+    </form>
+
+    <div id="content" style="display: none;">
+      <h2 id="contentTitle"></h2>
+      <input type="text" id="clauseInput" placeholder="Enter clause" />
+      <button onclick="insertClause()">Insert into Word</button>
+    </div>
+
+    <div id="status"></div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
