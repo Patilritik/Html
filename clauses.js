@@ -93,7 +93,7 @@ Office.onReady(async () => {
 
     // Function to fetch and populate agreement type list based on selected department
     async function fetchAgreementTypeList(deptId) {
-        const apiUrl = `https://lapi.convergelego.com/api/STDAgreementType/MstAgTypelist?comcode=${ComCode}&depid=${deptId}`;
+        const apiUrl = `https://lapi.convergelego.com/api/STDAgreementType/MstAgTypelisit?comcode=${ComCode}&depid=${deptId}`;
         try {
             agreementTypeSelect.disabled = false; // Enable the dropdown
             // agreementStatus.textContent = "Loading agreement types...";
