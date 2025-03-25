@@ -71,8 +71,8 @@ Office.onReady(() => {
             // Populate dropdown with department list
             data.forEach(department => {
                 const option = document.createElement("option");
-                option.value = department.Depid; // Assuming Depid is the department ID
-                option.textContent = department.Depname || department.Depid; // Use Depname if available, else Depid
+                option.value = department.DeptId; // Assuming Depid is the department ID
+                option.textContent = department.DeptName || department.DeptId; // Use Depname if available, else Depid
                 departmentSelect.appendChild(option);
             });
 
