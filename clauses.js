@@ -38,8 +38,8 @@ Office.onReady(() => {
     // `;
 
     // Fetch department list from API
-    const apiUrl = `https://api.convergelego.com/api/AddLegalAgreement/Departmentlist?companycode=${ComCode}&status=${status}`;
-
+    const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=${ComCode}&status=${status}`;
+                    https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=KARAM&status=1
     fetch(apiUrl, {
         method: "GET",
         headers: {
