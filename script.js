@@ -2,18 +2,41 @@ Office.onReady(() => {
     const params = new URLSearchParams(window.location.search);
     const type = params.get("type");
   
-    document.getElementById("loginForm").onsubmit = function (e) {
-      e.preventDefault();
-      // Simulated login
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-  
-      if (username && password) {
-        showContent(type);
-      } else {
-        alert("Please enter credentials.");
-      }
-    };
+    document.getElementById("loginForm").onsubmit = async function (e) {
+        e.preventDefault();
+    
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+    
+        if (!username || !password) {
+          alert("Please enter username and password.");
+          return;
+        }
+    
+        try {
+          const apiUrl = `https://addinapi.convergelego.com/api/Login/LoginCheck?pwd=${encodeURIComponent(password)}`;
+    
+          const res = await fetch(apiUrl, {
+            method: "GET",
+            headers: {
+              "Userid": username,
+              "Key": "0"
+            }
+          });
+    
+          const result = await res.json();
+    
+          if (res.ok && result.status === true) {
+            showContent(type);
+          } else {
+            alert(result.message || "Invalid credentials");
+          }
+    
+        } catch (err) {
+          console.error("Login API Error:", err);
+          alert("Login failed. Please check your network or credentials.");
+        }
+      };
   });
   
   function showContent(type) {
