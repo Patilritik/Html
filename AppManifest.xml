@@ -22,7 +22,7 @@
   </Hosts>
 
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://html-zqoo.vercel.app/index.html"/>
+    <SourceLocation DefaultValue="https://html-zqoo.vercel.app/index.html?type=clauses"/>
   </DefaultSettings>
 
   <Permissions>ReadWriteDocument</Permissions>
@@ -92,10 +92,10 @@
         <bt:Image id="Icon.80x80" DefaultValue="https://cdn-icons-png.flaticon.com/80/5436/5436637.png"/>
       </bt:Images>
 
-    <bt:Urls>
-    <bt:Url id="Clauses.Url" DefaultValue="https://html-zqoo.vercel.app/clauses.html"/>
-    <bt:Url id="AIClauses.Url" DefaultValue="https://html-zqoo.vercel.app/aiclauses.html"/>
-    </bt:Urls>
+      <bt:Urls>
+        <bt:Url id="Clauses.Url" DefaultValue="https://html-zqoo.vercel.app/index.html?type=clauses"/>
+        <bt:Url id="AIClauses.Url" DefaultValue="https://html-zqoo.vercel.app/index.html?type=ai"/>
+      </bt:Urls>
 
       <bt:ShortStrings>
         <bt:String id="Group.Label" DefaultValue="ConvergeLego Group"/>
@@ -111,7 +111,6 @@
     </Resources>
   </VersionOverrides>
 </OfficeApp>
-
 
 
 <!-- <?xml version="1.0" encoding="UTF-8"?>

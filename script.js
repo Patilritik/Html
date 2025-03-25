@@ -64,53 +64,53 @@
 //     });
 //   }
   
-
 Office.onReady(() => {
+    // Get the type parameter from URL
     const params = new URLSearchParams(window.location.search);
     const type = params.get("type"); // 'clauses' or 'ai'
-  
+
     document.getElementById("loginForm").onsubmit = async function (e) {
-      e.preventDefault();
-  
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-  
-      if (!username || !password) {
-        alert("Please enter username and password.");
-        return;
-      }
-  
-      try {
-        const apiUrl = `https://addinapi.convergelego.com/api/Login/LoginCheck?pwd=${encodeURIComponent(password)}`;
-  
-        const res = await fetch(apiUrl, {
-          method: "GET",
-          headers: {
-            "Userid": username,
-            "Key": "0"
-          }
-        });
-  
-        const result = await res.json();
-  
-        if (res.status == 200) {
-          // Navigate to next page
-          console.log("Login successful. Redirecting to next page...");
-          if (type === "clauses") {
-            window.location.href = "clauses.html";
-          } else if (type === "ai") {
-            window.location.href = "aiclauses.html";
-          } else {
-            alert("Invalid page type.");
-          }
-        } else {
-          alert(result.message || "Invalid credentials");
+        e.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const statusDiv = document.getElementById("status");
+
+        if (!username || !password) {
+            statusDiv.innerText = "Please enter username and password.";
+            return;
         }
-  
-      } catch (err) {
-        console.error("Login error:", err);
-        alert("Login failed. Please try again.");
-      }
+
+        try {
+            const apiUrl = `https://addinapi.convergelego.com/api/Login/LoginCheck?pwd=${encodeURIComponent(password)}`;
+
+            const res = await fetch(apiUrl, {
+                method: "GET",
+                headers: {
+                    "Userid": username,
+                    "Key": "0"
+                }
+            });
+
+            const result = await res.json();
+
+            if (res.status === 200) {
+                // Successful login, navigate based on type
+                console.log("Login successful. Redirecting...", type);
+                if (type === "clauses") {
+                    window.location.href = "clauses.html";
+                } else if (type === "ai") {
+                    window.location.href = "aiclauses.html";
+                } else {
+                    statusDiv.innerText = "Invalid page type.";
+                }
+            } else {
+                statusDiv.innerText = result.message || "Invalid credentials";
+            }
+
+        } catch (err) {
+            console.error("Login error:", err);
+            statusDiv.innerText = "Login failed. Please try again.";
+        }
     };
-  });
-  
+});
