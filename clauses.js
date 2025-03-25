@@ -29,8 +29,7 @@ Office.onReady(async () => {
 
     // Function to fetch and populate department list
     async function fetchDepartmentList() {
-        const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlist?companycode=${ComCode}&status=${status}`;
-
+        const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=${ComCode}&status=${status}`;
         try {
             const response = await fetch(apiUrl, {
                 method: "GET",
