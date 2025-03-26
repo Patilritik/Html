@@ -11,11 +11,11 @@
   <DefaultLocale>en-US</DefaultLocale>
   <DisplayName DefaultValue="ConvergeLego Add-in" />
   <Description DefaultValue="Inserts clauses and AI-generated content into a Word document." />
-  <IconUrl DefaultValue="./assets/logo-legal.png"/>
+  <IconUrl DefaultValue="/assets/converlego_icon.jpg"/>
 
   <AppDomains>
-    <!-- <AppDomain>https://html-zqoo.vercel.app</AppDomain> -->
-    <AppDomain>https://convergelego-add-ins.vercel.app/</AppDomain>
+    <AppDomain>https://html-zqoo.vercel.app</AppDomain>
+    <!-- <AppDomain>https://convergelego-add-ins.vercel.app/</AppDomain> -->
   </AppDomains>
 
   <Hosts>
@@ -23,7 +23,8 @@
   </Hosts>
 
   <DefaultSettings>
-    <SourceLocation DefaultValue="https://convergelego-add-ins.vercel.app/index.html?type=clauses"/>
+    <SourceLocation DefaultValue="https://html-zqoo.vercel.app/index.html?type=clauses"/>
+    <!-- <SourceLocation DefaultValue="https://convergelego-add-ins.vercel.app/index.html?type=clauses"/> -->
   </DefaultSettings>
 
   <Permissions>ReadWriteDocument</Permissions>
@@ -94,8 +95,10 @@
       </bt:Images>
 
       <bt:Urls>
-        <bt:Url id="Clauses.Url" DefaultValue="https://convergelego-add-ins.vercel.app/index.html?type=clauses"/>
-        <bt:Url id="AIClauses.Url" DefaultValue="https://convergelego-add-ins.vercel.app/index.html?type=ai"/>
+        <bt:Url id="Clauses.Url" DefaultValue="https://html-zqoo.vercel.app/index.html?type=clauses"/>
+        <bt:Url id="AIClauses.Url" DefaultValue="https://html-zqoo.vercel.app/index.html?type=ai"/>
+        <!-- <bt:Url id="Clauses.Url" DefaultValue="https://convergelego-add-ins.vercel.app/index.html?type=clauses"/>
+        <bt:Url id="AIClauses.Url" DefaultValue="https://convergelego-add-ins.vercel.app/index.html?type=ai"/> -->
       </bt:Urls>
 
       <bt:ShortStrings>
