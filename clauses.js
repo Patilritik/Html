@@ -20,6 +20,10 @@ Office.onReady(async () => {
     const departmentSelect = document.getElementById("department");
     const agreementTypeSelect = document.getElementById("agreementType");
     const proceedBtn = document.getElementById("proceedBtn");
+    const copyTableBtn = document.getElementById("copyTableBtn");
+
+    // Initially hide the copy button until data is available
+    copyTableBtn.style.display = "none";
 
     async function fetchDepartmentList() {
         const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=${ComCode}&status=${status}`;
@@ -127,6 +131,8 @@ Office.onReady(async () => {
         updateProceedButtonState();
     });
 
+    let allClauses = []; // Store clauses globally for copying
+
     proceedBtn.addEventListener("click", async () => {
         const selectedDeptId = departmentSelect.value;
         const selectedAgreementId = agreementTypeSelect.value;
@@ -155,9 +161,11 @@ Office.onReady(async () => {
             const result = await response.json();
             console.log("Clauses API response:", result);
 
-            renderClausesTable(result?.Detail?.data || []);
+            allClauses = result?.Detail?.data || []; // Store clauses for copying
+            renderClausesTable(allClauses);
         } catch (error) {
             console.error("Error fetching clauses:", error);
+            allClauses = [];
             renderClausesTable([]);
         }
     });
@@ -169,26 +177,52 @@ Office.onReady(async () => {
         tbody.innerHTML = "";
 
         if (!clauses.length) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No clauses found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No clauses found.</td></tr>`;
+            copyTableBtn.style.display = "none"; // Hide button if no data
             container.style.display = "block";
             return;
         }
 
         clauses.forEach(clause => {
             const row = document.createElement("tr");
-
             row.innerHTML = `
                 <td>${clause.id || '-'}</td>
                 <td>${clause.causetitle || '-'}</td>
                 <td style="white-space: pre-wrap; max-width: 300px;">${clause.cause || '-'}</td>
                 <td>${clause.crby || '-'}</td>
                 <td>${clause.cron || '-'}</td>
-                `;
-                
-                tbody.appendChild(row);
-                // <td>${clause.statusdesc || '-'}</td>
+            `;
+            tbody.appendChild(row);
         });
 
         container.style.display = "block";
+        copyTableBtn.style.display = "block"; // Show button only if there is data
+    }
+
+    copyTableBtn.addEventListener("click", async () => {
+        if (!allClauses.length) {
+            console.log("No clauses to copy");
+            return;
+        }
+
+        const textToCopy = allClauses
+            .map(clause => `${clause.causetitle || 'Untitled Clause'}\n${clause.cause || '-'}\n`)
+            .join("\n"); // Format the text with titles and descriptions
+
+        await insertClausesIntoDocument(textToCopy);
+    });
+
+    async function insertClausesIntoDocument(clausesText) {
+        try {
+            await Word.run(async (context) => {
+                const document = context.document;
+                const range = document.getSelection();
+                range.insertText(clausesText, Word.InsertLocation.end); // Insert all clauses
+                await context.sync();
+                console.log("All clauses inserted successfully");
+            });
+        } catch (error) {
+            console.error("Error inserting clauses into document:", error);
+        }
     }
 });
