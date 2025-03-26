@@ -75,11 +75,19 @@ Office.onReady(() => {
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
         const statusDiv = document.getElementById("status");
+        const loader = document.getElementById("loader");
+        const loginBtn = document.getElementById("loginBtn");
 
         if (!username || !password) {
             statusDiv.innerText = "Please enter username and password.";
             return;
         }
+
+        // Show loader and disable button
+        loader.style.display = "block";
+        loginBtn.disabled = true;
+        loginBtn.style.opacity = "0.6";
+        statusDiv.innerText = "";
 
         try {
             const apiUrl = `https://addinapi.convergelego.com/api/Login/LoginCheck?pwd=${encodeURIComponent(password)}`;
@@ -94,6 +102,7 @@ Office.onReady(() => {
 
             const result = await res.json();
             console.log("Login result:", result);
+            
             if (result?.status === 200) {
                 // Successful login, navigate based on type
                 console.log("Login successful. Redirecting...", type);
@@ -112,6 +121,11 @@ Office.onReady(() => {
         } catch (err) {
             console.error("Login error:", err);
             statusDiv.innerText = "Login failed. Please try again.";
+        } finally {
+            // Hide loader and enable button regardless of success or failure
+            loader.style.display = "none";
+            loginBtn.disabled = false;
+            loginBtn.style.opacity = "1";
         }
     };
 });
