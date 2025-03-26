@@ -69,6 +69,21 @@ Office.onReady(() => {
     const params = new URLSearchParams(window.location.search);
     const type = params.get("type"); // 'clauses' or 'ai'
 
+    // Check if user is already logged in
+    const loginData = localStorage.getItem("loginData");
+    if (loginData) {
+      // User is logged in, redirect based on type
+      console.log("User already logged in. Redirecting...", type);
+      if (type === "clauses") {
+        window.location.href = "clauses.html";
+      } else if (type === "ai") {
+        window.location.href = "aiclauses.html";
+      } else {
+        document.getElementById("status").innerText = "Invalid page type.";
+      }
+      return; // Exit the function to prevent login form processing
+    }
+    
     document.getElementById("loginForm").onsubmit = async function (e) {
         e.preventDefault();
 
