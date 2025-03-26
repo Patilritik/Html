@@ -181,12 +181,12 @@ Office.onReady(async () => {
                 <td>${clause.id || '-'}</td>
                 <td>${clause.causetitle || '-'}</td>
                 <td style="white-space: pre-wrap; max-width: 300px;">${clause.cause || '-'}</td>
-                <td>${clause.statusdesc || '-'}</td>
                 <td>${clause.crby || '-'}</td>
                 <td>${clause.cron || '-'}</td>
-            `;
-
-            tbody.appendChild(row);
+                `;
+                
+                tbody.appendChild(row);
+                // <td>${clause.statusdesc || '-'}</td>
         });
 
         container.style.display = "block";
