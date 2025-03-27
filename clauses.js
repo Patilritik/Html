@@ -204,6 +204,7 @@ Office.onReady(async () => {
                 // Try to set column widths
             try {
                 const columns = table.columns;
+                table.load("columns/items/width");
                 await context.sync(); // Ensure columns are loaded
                 console.log("Columns:", columns);
                 console.log("Columns loaded:", columns.items);
