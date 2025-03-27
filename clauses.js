@@ -261,7 +261,7 @@ Office.onReady(async () => {
     
                 // Set table width and adjust content
                 table.preferredWidth = 520; // Total width in points (60 + 100 + 200 + 80 + 80)
-                table.autoFitContent(); // Automatically adjust column widths to content
+                // table.autoFitContent(); // Automatically adjust column widths to content
     
                 // Optional: Fine-tune with percentage-based widths (if needed)
                 table.preferredWidthType = Word.WidthType.percentage;
