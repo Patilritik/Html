@@ -122,6 +122,7 @@ Office.onReady(async () => {
                 // Create table in Word
                 const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
                 
+                console.log("Table created:", table);
                 // Add headers
                 const headerRow = table.getRow(0);
                 headerRow.values = [["Clause ID", "Title", "Description", "Created By", "Created On"]];
