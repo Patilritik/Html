@@ -141,7 +141,8 @@ Office.onReady(async () => {
                         clause.cron || '-'
                     ];
                 });
-
+                console.log("table",table);
+                console.log("table.values",table.values);
                 // Apply formatting
                 table.style = "Grid Table 4 - Accent 1";
                 table.getRange().font.size = 10;
