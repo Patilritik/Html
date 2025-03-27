@@ -114,6 +114,46 @@ Office.onReady(async () => {
         proceedBtn.disabled = !(departmentSelect.value && agreementTypeSelect.value);
     }
 
+    async function copyToWord(clauses) {
+        try {
+            await Word.run(async (context) => {
+                const body = context.document.body;
+                
+                // Create table in Word
+                const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
+                
+                // Add headers
+                const headerRow = table.getRow(0);
+                headerRow.values = [["Clause ID", "Title", "Description", "Created By", "Created On"]];
+                
+                // Add data rows
+                clauses.forEach((clause, index) => {
+                    const row = table.getRow(index + 1);
+                    row.values = [[
+                        clause.id || '-',
+                        clause.causetitle || '-',
+                        clause.cause || '-',
+                        clause.crby || '-',
+                        clause.cron || '-'
+                    ]];
+                });
+                
+                // Format table
+                table.styleBuiltIn = Word.BuiltInStyleName.gridTable4Accent1;
+                table.getHeaderRowRange().getCell(0,0).columnWidth = 60;  // Clause ID
+                table.getHeaderRowRange().getCell(0,1).columnWidth = 100; // Title
+                table.getHeaderRowRange().getCell(0,2).columnWidth = 200; // Description
+                table.getHeaderRowRange().getCell(0,3).columnWidth = 80;  // Created By
+                table.getHeaderRowRange().getCell(0,4).columnWidth = 80;  // Created On
+                
+                await context.sync();
+            });
+        } catch (error) {
+            console.error("Error copying to Word:", error);
+            alert("Error copying to Word document. Please try again.");
+        }
+    }
+
     departmentSelect.addEventListener("change", (e) => {
         const deptId = e.target.value;
         if (deptId) {
@@ -131,8 +171,11 @@ Office.onReady(async () => {
         const deptId = departmentSelect.value;
         const agTypeId = agreementTypeSelect.value;
         const apiUrl = "https://addinapi.convergelego.com/api/CompanyMaster/GetMstCauseLisit";
+        const copyBtn = document.getElementById("copyToWordBtn");
 
-        showLoader(); // Show loader on Proceed
+        showLoader();
+        copyBtn.style.display = "none"; // Hide button before fetching new data
+        
         try {
             const response = await fetch(apiUrl, {
                 method: "POST",
@@ -156,19 +199,21 @@ Office.onReady(async () => {
             console.error("Clause fetch error:", error);
             renderClausesTable([]);
         } finally {
-            hideLoader(); // Hide loader after fetch
+            hideLoader();
         }
     });
 
     function renderClausesTable(clauses) {
         const container = document.getElementById("clausesTableContainer");
         const tbody = document.getElementById("clausesTableBody");
+        const copyBtn = document.getElementById("copyToWordBtn");
 
         tbody.innerHTML = "";
 
         if (!clauses.length) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No clauses found.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No clauses found.</td></tr>`;
             container.style.display = "block";
+            copyBtn.style.display = "none";
             return;
         }
 
@@ -180,12 +225,20 @@ Office.onReady(async () => {
                 <td style="white-space: pre-wrap; max-width: 300px;">${c.cause || '-'}</td>
                 <td>${c.crby || '-'}</td>
                 <td>${c.cron || '-'}</td>
-                `;
-                tbody.appendChild(row);
-                // <td>${c.statusdesc || '-'}</td>
+            `;
+            tbody.appendChild(row);
         });
 
         container.style.display = "block";
+        copyBtn.style.display = "block"; // Show button when data exists
+
+        // Remove any existing listeners to prevent multiple bindings
+        copyBtn.removeEventListener("click", copyBtn._listener);
+        
+        // Add new click listener
+        const clickListener = () => copyToWord(clauses);
+        copyBtn._listener = clickListener;
+        copyBtn.addEventListener("click", clickListener);
     }
 
     // Initial fetch
