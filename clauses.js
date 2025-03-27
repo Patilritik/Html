@@ -238,35 +238,38 @@ Office.onReady(async () => {
         try {
           await Word.run(async (context) => {
             const body = context.document.body;
-            const rowCount = clauses.length + 1; // +1 for header
+            const rowCount = clauses.length + 1; // +1 for header row
             const colCount = 5;
       
-            // Insert a table
+            // Insert table at the end of the document
             const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
             table.style = "Grid Table 4 - Accent 1";
             table.getRange().font.size = 10;
       
-            // Create data rows (including header)
+            // Debug: log clauses to verify content
+            console.log("Clauses to insert:", clauses);
+      
+            // Prepare table data (headers + rows)
             const values = [
               ["Clause ID", "Title", "Description", "Created By", "Created On"],
               ...clauses.map(clause => [
-                clause.id || "-",
-                clause.causetitle || "-",
-                clause.cause || "-",
-                clause.crby || "-",
-                clause.cron || "-"
+                clause?.id || "-",
+                clause?.causetitle || "-",
+                clause?.cause || "-",
+                clause?.crby || "-",
+                clause?.cron || "-"
               ])
             ];
       
-            // Assign values to the table
+            // Apply values to table
             table.getRange().values = values;
       
-            await context.sync(); // Commit the changes
+            await context.sync();
             console.log("✅ Table inserted successfully.");
           });
         } catch (error) {
-          console.error("❌ Error copying to Word:", error);
-          // Optional: Show custom error message in the UI
+          console.error("❌ Error copying to Word:", error.message || error);
+          // Optional: show error in UI instead of alert
         }
       }
     // Simple Format
