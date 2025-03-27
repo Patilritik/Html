@@ -233,47 +233,94 @@ Office.onReady(async () => {
     //     }
     // }
 
+    // Workable
+    // async function copyToWord(clauses) {
+    //     try {
+    //       await Word.run(async (context) => {
+    //         const body = context.document.body;
+    //         const rowCount = clauses.length + 1; // +1 for header row
+    //         const colCount = 5;
+      
+    //         // Insert table at the end of the document
+    //         const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
+    //         table.style = "Grid Table 4 - Accent 1";
+    //         table.getRange().font.size = 12;
+      
+    //         // Debug: log clauses to verify content
+    //         console.log("Clauses to insert:", clauses);
+      
+    //         // Prepare table data (headers + rows)
+    //         const values = [
+    //           ["Clause ID", "Title", "Description", "Created By", "Created On"],
+    //           ...clauses.map(clause => [
+    //             clause?.id || "-",
+    //             clause?.causetitle || "-",
+    //             clause?.cause || "-",
+    //             clause?.crby || "-",
+    //             clause?.cron || "-"
+    //           ])
+    //         ];
+      
+    //         // Apply values to table
+    //         table.values = values;
+      
+    //         await context.sync();
+    //         console.log("✅ Table ", table, " inserted successfully.");
+    //         // console.log("✅ Table inserted successfully.");
+
+    //       });
+    //     } catch (error) {
+    //       console.error("❌ Error copying to Word:", error.message || error);
+    //       // Optional: show error in UI instead of alert
+    //     }
+    //   }
 
     async function copyToWord(clauses) {
         try {
-          await Word.run(async (context) => {
-            const body = context.document.body;
-            const rowCount = clauses.length + 1; // +1 for header row
-            const colCount = 5;
-      
-            // Insert table at the end of the document
-            const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
-            table.style = "Grid Table 4 - Accent 1";
-            table.getRange().font.size = 12;
-      
-            // Debug: log clauses to verify content
-            console.log("Clauses to insert:", clauses);
-      
-            // Prepare table data (headers + rows)
-            const values = [
-              ["Clause ID", "Title", "Description", "Created By", "Created On"],
-              ...clauses.map(clause => [
-                clause?.id || "-",
-                clause?.causetitle || "-",
-                clause?.cause || "-",
-                clause?.crby || "-",
-                clause?.cron || "-"
-              ])
-            ];
-      
-            // Apply values to table
-            table.values = values;
-      
-            await context.sync();
-            console.log("✅ Table ", table, " inserted successfully.");
-            // console.log("✅ Table inserted successfully.");
-
-          });
+            await Word.run(async (context) => {
+                const body = context.document.body;
+                const rowCount = clauses.length + 1; // +1 for header row
+                const colCount = 5;
+    
+                // Insert table title as a paragraph
+                const titleParagraph = body.insertParagraph("Clause List", Word.InsertLocation.end);
+                titleParagraph.font.size = 14; // Slightly larger font for the title
+                titleParagraph.font.bold = true; // Make the title bold
+                titleParagraph.alignment = Word.Alignment.centered; // Center the title
+    
+                // Add a small space between title and table (optional)
+                body.insertParagraph("", Word.InsertLocation.end); // Empty paragraph for spacing
+    
+                // Insert table at the end of the document
+                const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
+                table.style = "Grid Table 4 - Accent 1";
+                table.getRange().font.size = 12;
+    
+                // Debug: log clauses to verify content
+                console.log("Clauses to insert:", clauses);
+    
+                // Prepare table data (headers + rows)
+                const values = [
+                    ["Clause ID", "Title", "Description", "Created By", "Created On"],
+                    ...clauses.map(clause => [
+                        clause?.id || "-",
+                        clause?.causetitle || "-",
+                        clause?.cause || "-",
+                        clause?.crby || "-",
+                        clause?.cron || "-"
+                    ])
+                ];
+    
+                // Apply values to table
+                table.values = values;
+    
+                await context.sync();
+                console.log("✅ Table ", table, " inserted successfully.");
+            });
         } catch (error) {
-          console.error("❌ Error copying to Word:", error.message || error);
-          // Optional: show error in UI instead of alert
+            console.error("❌ Error copying to Word:", error.message || error);
         }
-      }
+    }
     // Simple Format
     // async function copyToWord(clauses) {
     //     try {
