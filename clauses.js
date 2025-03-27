@@ -236,43 +236,62 @@ Office.onReady(async () => {
 
     async function copyToWord(clauses) {
         try {
-            await Word.run(async (context) => {
-                console.log("Copying to Word:", clauses);
-                const body = context.document.body;
-    
-                // Insert table with rows (clauses.length + 1 for header) and 5 columns
-                const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
-    
-                // Set header row
-                table.values[0] = ["Clause ID", "Title", "Description", "Created By", "Created On"];
-    
-                // Set data rows
-                clauses.forEach((clause, index) => {
-                    table.values[index + 1] = [
-                        clause.id || '-',
-                        clause.causetitle || '-',
-                        clause.cause || '-',
-                        clause.crby || '-',
-                        clause.cron || '-'
-                    ];
-                });
-    
-                // Apply basic formatting
-                table.style = "Grid Table 4 - Accent 1"; // Apply a predefined style
-                table.getRange().font.size = 10; // Set font size
-                table.preferredWidth = 520; // Set total width in points (approximate)
-                // table.autoFitContent(); // Auto-fit content to adjust column widths
-    
-                // Sync changes to Word document
-                await context.sync();
-                console.log("Table successfully created");
+          await Word.run(async (context) => {
+            const body = context.document.body;
+            const rowCount = clauses.length + 1;
+            const colCount = 5;
+      
+            const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
+            table.style = "Grid Table 4 - Accent 1";
+            table.getRange().font.size = 10;
+      
+            // Prepare values for the entire table
+            const values = [];
+      
+            // Header row
+            values.push(["Clause ID", "Title", "Description", "Created By", "Created On"]);
+      
+            // Data rows
+            clauses.forEach((clause) => {
+              values.push([
+                clause.id || "-",
+                clause.causetitle || "-",
+                clause.cause || "-",
+                clause.crby || "-",
+                clause.cron || "-"
+              ]);
             });
+      
+            // Apply values to table
+            table.getRange().values = values;
+      
+            // Optionally set column widths
+            try {
+              const columns = table.columns;
+              await context.sync();
+              if (columns.items.length === colCount) {
+                columns.items[0].setWidth(60, Word.WidthUnits.points);
+                columns.items[1].setWidth(100, Word.WidthUnits.points);
+                columns.items[2].setWidth(200, Word.WidthUnits.points);
+                columns.items[3].setWidth(80, Word.WidthUnits.points);
+                columns.items[4].setWidth(80, Word.WidthUnits.points);
+              }
+            } catch (colError) {
+              console.warn("Column width adjustment failed:", colError);
+              table.autoFitContents();
+            }
+      
+            await context.sync();
+            console.log("Table inserted successfully.");
+          });
         } catch (error) {
-            console.error("Error copying to Word:", error);
-            alert("Error copying to Word document: " + error.message);
+          console.error("Error copying to Word:", error);
+          // Avoid alert on Word Web, use console or custom UI message instead
+          if (Office.context.requirements.isSetSupported("WordApi", "1.3")) {
+            console.log("Show error in UI: " + error.message);
+          }
         }
-    }
-
+      }
     // Simple Format
     // async function copyToWord(clauses) {
     //     try {
