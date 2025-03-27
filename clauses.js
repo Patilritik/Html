@@ -119,39 +119,46 @@ Office.onReady(async () => {
             await Word.run(async (context) => {
                 const body = context.document.body;
                 
-                // Create table in Word
-                const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
+                // Create a table with headers and data as a single HTML string
+                let tableHtml = '<table border="1"><tr><th>Clause ID</th><th>Title</th><th>Description</th><th>Created By</th><th>Created On</th></tr>';
                 
-                console.log("Table created:", table);
-                // Add headers
-                const headerRow = table.getRow(0);
-                headerRow.values = [["Clause ID", "Title", "Description", "Created By", "Created On"]];
-                
-                // Add data rows
-                clauses.forEach((clause, index) => {
-                    const row = table.getRow(index + 1);
-                    row.values = [[
-                        clause.id || '-',
-                        clause.causetitle || '-',
-                        clause.cause || '-',
-                        clause.crby || '-',
-                        clause.cron || '-'
-                    ]];
+                clauses.forEach(clause => {
+                    tableHtml += '<tr>' +
+                        `<td>${clause.id || '-'}</td>` +
+                        `<td>${clause.causetitle || '-'}</td>` +
+                        `<td>${clause.cause || '-'}</td>` +
+                        `<td>${clause.crby || '-'}</td>` +
+                        `<td>${clause.cron || '-'}</td>` +
+                        '</tr>';
                 });
+                tableHtml += '</table>';
+
+                // Insert the HTML table
+                const tableRange = body.insertHtml(tableHtml, Word.InsertLocation.end);
                 
-                // Format table
-                table.styleBuiltIn = Word.BuiltInStyleName.gridTable4Accent1;
-                table.getHeaderRowRange().getCell(0,0).columnWidth = 60;  // Clause ID
-                table.getHeaderRowRange().getCell(0,1).columnWidth = 100; // Title
-                table.getHeaderRowRange().getCell(0,2).columnWidth = 200; // Description
-                table.getHeaderRowRange().getCell(0,3).columnWidth = 80;  // Created By
-                table.getHeaderRowRange().getCell(0,4).columnWidth = 80;  // Created On
+                // Load the inserted table
+                const table = tableRange.getTables().getFirst();
+                table.load('style, columns');
                 
+                await context.sync();
+
+                // Apply formatting
+                table.style = "Grid Table 4 - Accent 1";
+                table.getRange().font.size = 10;
+                
+                // Set column widths (in points)
+                const columns = table.columns;
+                columns.getItem(0).setWidth(60, Word.WidthUnits.points);  // Clause ID
+                columns.getItem(1).setWidth(100, Word.WidthUnits.points); // Title
+                columns.getItem(2).setWidth(200, Word.WidthUnits.points); // Description
+                columns.getItem(3).setWidth(80, Word.WidthUnits.points);  // Created By
+                columns.getItem(4).setWidth(80, Word.WidthUnits.points);  // Created On
+
                 await context.sync();
             });
         } catch (error) {
             console.error("Error copying to Word:", error);
-            alert("Error copying to Word document. Please try again.");
+            alert("Error copying to Word document: " + error.message);
         }
     }
 
