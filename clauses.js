@@ -117,6 +117,7 @@ Office.onReady(async () => {
     async function copyToWord(clauses) {
         try {
             await Word.run(async (context) => {
+                console.log("Copying to Word:", clauses);
                 const body = context.document.body;
                 
                 // Insert table with rows and columns
