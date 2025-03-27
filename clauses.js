@@ -261,6 +261,7 @@ Office.onReady(async () => {
 
                 // Set column widths manually
                 const columns = table.columns;
+                console.log("columns",columns);
                 columns.items[0].width = 60;  // Clause ID
                 columns.items[1].width = 100; // Title
                 columns.items[2].width = 200; // Description
