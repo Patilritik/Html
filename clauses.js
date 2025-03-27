@@ -147,6 +147,9 @@ Office.onReady(async () => {
 
                 // Set column widths (in points)
                 const columns = table.columns;
+                console.log("columns",columns);
+                console.log("columns.items",columns.items);
+                console.log("columns.items[0]",columns.items[0]);
                 columns.items[0].setWidth(60, Word.WidthUnits.points);  // Clause ID
                 columns.items[1].setWidth(100, Word.WidthUnits.points); // Title
                 columns.items[2].setWidth(200, Word.WidthUnits.points); // Description
