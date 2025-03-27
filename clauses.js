@@ -225,25 +225,56 @@ Office.onReady(async () => {
     async function insertClausesIntoDocument(tableData) {
         try {
             await Word.run(async (context) => {
-                const range = context.document.getSelection();
+                // Sanitize tableData to ensure all values are strings
+                const sanitizedTableData = tableData.map(row => 
+                    row.map(value => String(value ?? '-')) // Convert null/undefined to '-' and ensure string
+                );
+    
+                // Define the full table with headers
                 const fullTableData = [
                     ['Clause ID', 'Title', 'Description', 'Created By', 'Created On'],
-                    ...tableData
+                    ...sanitizedTableData
                 ];
+    
+                // Validate dimensions
                 const numRows = fullTableData.length;
                 const numCols = fullTableData[0].length;
+                console.log(`Inserting table with ${numRows} rows and ${numCols} columns`);
+                console.log("Table data:", fullTableData);
+    
+                // Check that all rows have the same number of columns
+                const isValid = fullTableData.every(row => row.length === numCols);
+                if (!isValid) {
+                    throw new Error("Table data is invalid: Rows have inconsistent column counts.");
+                }
+    
+                // Insert the table at the current selection
+                const range = context.document.getSelection();
                 const table = range.insertTable(numRows, numCols, Word.InsertLocation.end);
+    
+                // Load and set table properties
+                table.load("values");
                 table.values = fullTableData;
+    
+                // Apply styling
                 table.style = 'Grid Table 5 Dark - Accent 1';
                 const headerRow = table.rows.getFirst();
                 headerRow.font.bold = true;
+    
+                // Optional: Adjust column widths for better readability
+                table.getRange().setColumnWidth(150); // Set to 150 points, adjust as needed
+    
+                // Sync changes to the document
                 await context.sync();
                 console.log("✅ Table inserted successfully");
-                alert("Table inserted into document successfully!"); // Added
+                alert("Table inserted into document successfully!");
             });
         } catch (error) {
             console.error("❌ Error inserting table into document:", error);
-            alert("Failed to insert table: " + error.message); // Added
+            if (error.debugInfo) {
+                console.log("Debug Info:", error.debugInfo);
+            }
+            alert("Failed to insert table: " + error.message);
         }
     }
       
