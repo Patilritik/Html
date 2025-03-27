@@ -265,7 +265,9 @@ Office.onReady(async () => {
             table.getRange().values = values;
       
             await context.sync();
-            console.log("✅ Table inserted successfully.");
+            console.log("✅ Table ", table, " inserted successfully.");
+            // console.log("✅ Table inserted successfully.");
+
           });
         } catch (error) {
           console.error("❌ Error copying to Word:", error.message || error);
