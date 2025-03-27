@@ -204,10 +204,10 @@ Office.onReady(async () => {
                 // Try to set column widths
             try {
                 const columns = table.columns;
-                table.load("columns/items/width");
-                await context.sync(); // Ensure columns are loaded
-                console.log("Columns:", columns);
-                console.log("Columns loaded:", columns.items);
+                table.load("columns"); // Explicitly load columns
+                await context.sync(); // Sync again to ensure columns are available
+                console.log("Columns loaded:", columns);
+                
                 if (columns && columns.items && columns.items.length > 0) {
                     columns.items[0].setWidth(60, Word.WidthUnits.points);  // Clause ID
                     columns.items[1].setWidth(100, Word.WidthUnits.points); // Title
