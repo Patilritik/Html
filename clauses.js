@@ -236,48 +236,39 @@ Office.onReady(async () => {
 
     async function copyToWord(clauses) {
         try {
-            await Word.run(async (context) => {
-                console.log("Copying to Word:", clauses);
-                const body = context.document.body;
-    
-                // Insert table with rows and columns
-                const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
-    
-                // Set header row and data rows in one go
-                table.values = [
-                    ["Clause ID", "Title", "Description", "Created By", "Created On"],
-                    ...clauses.map(clause => [
-                        clause.id || '-',
-                        clause.causetitle || '-',
-                        clause.cause || '-',
-                        clause.crby || '-',
-                        clause.cron || '-'
-                    ])
-                ];
-    
-                // Apply formatting
-                table.style = "Grid Table 4 - Accent 1"; // Predefined table style
-                table.getRange().font.size = 10; // Font size for entire table
-    
-                // Set table width and adjust content
-                table.preferredWidth = 520; // Total width in points (60 + 100 + 200 + 80 + 80)
-                // table.autoFitContent(); // Automatically adjust column widths to content
-    
-                // Optional: Fine-tune with percentage-based widths (if needed)
-                table.preferredWidthType = Word.WidthType.percentage;
-                table.preferredWidth = 100; // 100% of page width (alternative approach)
-    
-                console.log("table", table);
-                console.log("table.values", table.values);
-    
-                await context.sync();
-                console.log("Table successfully created");
-            });
+          await Word.run(async (context) => {
+            const body = context.document.body;
+            const rowCount = clauses.length + 1; // +1 for header
+            const colCount = 5;
+      
+            // Insert a table
+            const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
+            table.style = "Grid Table 4 - Accent 1";
+            table.getRange().font.size = 10;
+      
+            // Create data rows (including header)
+            const values = [
+              ["Clause ID", "Title", "Description", "Created By", "Created On"],
+              ...clauses.map(clause => [
+                clause.id || "-",
+                clause.causetitle || "-",
+                clause.cause || "-",
+                clause.crby || "-",
+                clause.cron || "-"
+              ])
+            ];
+      
+            // Assign values to the table
+            table.getRange().values = values;
+      
+            await context.sync(); // Commit the changes
+            console.log("✅ Table inserted successfully.");
+          });
         } catch (error) {
-            console.error("Error copying to Word:", error);
-            alert("Error copying to Word document: " + error.message);
+          console.error("❌ Error copying to Word:", error);
+          // Optional: Show custom error message in the UI
         }
-    }
+      }
     // Simple Format
     // async function copyToWord(clauses) {
     //     try {
