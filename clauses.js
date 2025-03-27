@@ -113,7 +113,8 @@ Office.onReady(async () => {
     function updateProceedButtonState() {
         proceedBtn.disabled = !(departmentSelect.value && agreementTypeSelect.value);
     }
-
+    
+    // Table format
     async function copyToWord(clauses) {
         try {
             await Word.run(async (context) => {
@@ -159,6 +160,37 @@ Office.onReady(async () => {
                 columns.items[4].setWidth(80, Word.WidthUnits.points);  // Created On
 
                 await context.sync();
+            });
+        } catch (error) {
+            console.error("Error copying to Word:", error);
+            alert("Error copying to Word document: " + error.message);
+        }
+    }
+
+    // Simple Format
+    async function copyToWord(clauses) {
+        try {
+            await Word.run(async (context) => {
+                console.log("Copying to Word:", clauses);
+                const body = context.document.body;
+    
+                // Insert header as a paragraph
+                body.insertParagraph("Clause ID | Title | Description | Created By | Created On", Word.InsertLocation.end);
+                body.insertParagraph("------------------------------------------------------------", Word.InsertLocation.end);
+    
+                // Insert each clause as a paragraph
+                clauses.forEach(clause => {
+                    const clauseText = `${clause.id || '-'} | ${clause.causetitle || '-'} | ${clause.cause || '-'} | ${clause.crby || '-'} | ${clause.cron || '-'}`;
+                    const paragraph = body.insertParagraph(clauseText, Word.InsertLocation.end);
+                    paragraph.font.size = 10;
+                });
+    
+                // Add some spacing at the end
+                body.insertParagraph("", Word.InsertLocation.end);
+    
+                await context.sync();
+    
+                console.log("Data inserted into Word document");
             });
         } catch (error) {
             console.error("Error copying to Word:", error);
