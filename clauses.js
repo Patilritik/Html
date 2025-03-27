@@ -205,24 +205,51 @@ Office.onReady(async () => {
             return;
         }
 
-        const textToCopy = allClauses
-            .map(clause => `${clause.causetitle || 'Untitled Clause'}\n${clause.cause || '-'}\n`)
-            .join("\n"); // Format the text with titles and descriptions
+        // const textToCopy = allClauses
+        //     .map(clause => `${clause.causetitle || 'Untitled Clause'}\n${clause.cause || '-'}\n`)
+        //     .join("\n"); // Format the text with titles and descriptions
 
-        await insertClausesIntoDocument(textToCopy);
+        // Prepare the table data
+    const tableData = allClauses.map(clause => [
+        clause.id || '-',
+        clause.causetitle || '-',
+        clause.cause || '-',
+        clause.crby || '-',
+        clause.cron || '-'
+    ]);
+
+        // await insertClausesIntoDocument(textToCopy);
+        await insertClausesIntoDocument(tableData);
     });
 
-    async function insertClausesIntoDocument(clausesText) {
-        try {
-            await Word.run(async (context) => {
-                const document = context.document;
-                const range = document.getSelection();
-                range.insertText(clausesText, Word.InsertLocation.end); // Insert all clauses
-                await context.sync();
-                console.log("All clauses inserted successfully");
+    async function insertClausesIntoDocument(tableData) {
+    try {
+        await Word.run(async (context) => {
+            const document = context.document;
+            const range = document.getSelection();
+
+            // Insert a table with the correct number of rows and 5 columns
+            const table = range.insertTable(tableData.length + 1, 5, Word.InsertLocation.end);
+
+            // Set the header row
+            const headerRow = table.getRow(0);
+            headerRow.values = [['Clause ID', 'Title', 'Description', 'Created By', 'Created On']];
+
+            // Populate the table with data
+            tableData.forEach((rowData, index) => {
+                const row = table.getRow(index + 1); // Offset by 1 for header
+                row.values = [rowData];
             });
-        } catch (error) {
-            console.error("Error inserting clauses into document:", error);
-        }
+
+            // Optional: Style the table
+            table.styleBuiltIn = Word.BuiltInStyleName.gridTable5DarkAccent1; // Apply a built-in style
+            table.getHeaderRowRange().font.bold = true; // Bold the header row
+
+            await context.sync();
+            console.log("Table inserted successfully");
+        });
+    } catch (error) {
+        console.error("Error inserting table into document:", error);
+    }
     }
 });
