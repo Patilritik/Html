@@ -236,57 +236,48 @@ Office.onReady(async () => {
 
     async function copyToWord(clauses) {
         try {
-          await Word.run(async (context) => {
-            const body = context.document.body;
-            const rowCount = clauses.length + 1;
-            const colCount = 5;
-      
-            const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
-            table.style = "Grid Table 4 - Accent 1";
-            table.getRange().font.size = 10;
-      
-            // Prepare all values
-            const values = [
-              ["Clause ID", "Title", "Description", "Created By", "Created On"],
-              ...clauses.map(clause => [
-                clause.id || "-",
-                clause.causetitle || "-",
-                clause.cause || "-",
-                clause.crby || "-",
-                clause.cron || "-"
-              ])
-            ];
-      
-            table.getRange().values = values;
-      
-            // Column width adjustment – only if available
-            try {
-              const columns = table.columns;
-              columns.load("items");
-              await context.sync();
-      
-              if (columns.items && columns.items.length === colCount) {
-                columns.items[0].setWidth(60, Word.WidthUnits.points);
-                columns.items[1].setWidth(100, Word.WidthUnits.points);
-                columns.items[2].setWidth(200, Word.WidthUnits.points);
-                columns.items[3].setWidth(80, Word.WidthUnits.points);
-                columns.items[4].setWidth(80, Word.WidthUnits.points);
+            await Word.run(async (context) => {
+                console.log("Copying to Word:", clauses);
+                const body = context.document.body;
+    
+                // Insert table with rows and columns
+                const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
+    
+                // Set header row and data rows in one go
+                table.values = [
+                    ["Clause ID", "Title", "Description", "Created By", "Created On"],
+                    ...clauses.map(clause => [
+                        clause.id || '-',
+                        clause.causetitle || '-',
+                        clause.cause || '-',
+                        clause.crby || '-',
+                        clause.cron || '-'
+                    ])
+                ];
+    
+                // Apply formatting
+                table.style = "Grid Table 4 - Accent 1"; // Predefined table style
+                table.getRange().font.size = 10; // Font size for entire table
+    
+                // Set table width and adjust content
+                table.preferredWidth = 520; // Total width in points (60 + 100 + 200 + 80 + 80)
+                table.autoFitContent(); // Automatically adjust column widths to content
+    
+                // Optional: Fine-tune with percentage-based widths (if needed)
+                table.preferredWidthType = Word.WidthType.percentage;
+                table.preferredWidth = 100; // 100% of page width (alternative approach)
+    
+                console.log("table", table);
+                console.log("table.values", table.values);
+    
                 await context.sync();
-              } else {
-                console.warn("Column widths not available, skipping adjustment.");
-              }
-            } catch (colError) {
-              console.warn("Column width adjustment failed:", colError.message);
-              // No fallback needed
-            }
-      
-            console.log("✅ Table inserted successfully.");
-          });
+                console.log("Table successfully created");
+            });
         } catch (error) {
-          console.error("❌ Error copying to Word:", error);
-          // Optionally show UI error
+            console.error("Error copying to Word:", error);
+            alert("Error copying to Word document: " + error.message);
         }
-      }
+    }
     // Simple Format
     // async function copyToWord(clauses) {
     //     try {
