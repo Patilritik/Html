@@ -295,6 +295,7 @@ Office.onReady(async () => {
                 const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
                 table.style = "Grid Table 4 - Accent 1";
                 table.getRange().font.size = 12;
+                table.getRange().font.bold = false; // Explicitly set table content to not bold
     
                 // Debug: log clauses to verify content
                 console.log("Clauses to insert:", clauses);
