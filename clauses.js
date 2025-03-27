@@ -227,31 +227,28 @@ Office.onReady(async () => {
           await Word.run(async (context) => {
             const range = context.document.getSelection();
       
-            // Insert the table with (data.length + 1) rows (including header), 5 columns
-            const table = range.insertTable(tableData.length + 1, 5, Word.InsertLocation.end);
-      
-            // Combine header and rows
             const fullTableData = [
               ['Clause ID', 'Title', 'Description', 'Created By', 'Created On'],
               ...tableData
             ];
       
-            // Assign all values
+            const table = range.insertTable(fullTableData.length, 5, Word.InsertLocation.end);
             table.values = fullTableData;
       
             // Style the table
             table.style = 'Grid Table 5 Dark - Accent 1';
       
-            // Bold the first row (header)
-            const headerRow = table.getHeaderRowRange();
+            // Bold the first row (header row)
+            const headerRow = table.rows.getFirst();
             headerRow.font.bold = true;
       
             await context.sync();
-            console.log("✅ Table inserted successfully.");
+            console.log("✅ Table inserted successfully");
           });
         } catch (error) {
           console.error("❌ Error inserting table into document:", error);
         }
       }
+      
       
 });
