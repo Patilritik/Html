@@ -173,16 +173,18 @@ Office.onReady(async () => {
             await Word.run(async (context) => {
                 console.log("Copying to Word:", clauses);
                 const body = context.document.body;
-    
+                
                 // Insert table with rows and columns
                 const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
-    
+                
                 // Load table properties
-                table.load("values, style");
-    
+                table.load("values, style, columns");
+
+                await context.sync();
+
                 // Set header row
                 table.values[0] = ["Clause ID", "Title", "Description", "Created By", "Created On"];
-    
+
                 // Set data rows
                 clauses.forEach((clause, index) => {
                     table.values[index + 1] = [
@@ -193,15 +195,37 @@ Office.onReady(async () => {
                         clause.cron || '-'
                     ];
                 });
-    
-                // Apply basic formatting
+                console.log("table",table);
+                console.log("table.values",table.values);
+                // Apply formatting
                 table.style = "Grid Table 4 - Accent 1";
                 table.getRange().font.size = 10;
-    
-                // Sync to insert the table into the document
-                await context.sync();
-    
-                console.log("Table successfully created with data:", table.values);
+
+                // Try to set column widths
+            try {
+                const columns = table.columns;
+                table.load("columns"); // Explicitly load columns
+                await context.sync(); // Sync again to ensure columns are available
+                console.log("Columns loaded:", columns);
+                
+                if (columns && columns.items && columns.items.length > 0) {
+                    columns.items[0].setWidth(60, Word.WidthUnits.points);  // Clause ID
+                    columns.items[1].setWidth(100, Word.WidthUnits.points); // Title
+                    columns.items[2].setWidth(200, Word.WidthUnits.points); // Description
+                    columns.items[3].setWidth(80, Word.WidthUnits.points);  // Created By
+                    columns.items[4].setWidth(80, Word.WidthUnits.points);  // Created On
+                } else {
+                    console.warn("Columns not available, skipping width adjustment");
+                }
+            } catch (colError) {
+                console.warn("Column width adjustment failed:", colError);
+                // Fallback: Use table preferred width and auto-fit
+                table.preferredWidth = 520; // Total width in points (60 + 100 + 200 + 80 + 80)
+                table.autoFitContent();
+            }
+
+            await context.sync();
+            console.log("Table successfully created");
             });
         } catch (error) {
             console.error("Error copying to Word:", error);
