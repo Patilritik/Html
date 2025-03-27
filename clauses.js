@@ -244,7 +244,7 @@ Office.onReady(async () => {
             // Insert table at the end of the document
             const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
             table.style = "Grid Table 4 - Accent 1";
-            table.getRange().font.size = 10;
+            table.getRange().font.size = 16;
       
             // Debug: log clauses to verify content
             console.log("Clauses to insert:", clauses);
