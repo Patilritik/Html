@@ -224,38 +224,28 @@ Office.onReady(async () => {
 
     async function insertClausesIntoDocument(tableData) {
         try {
-          await Word.run(async (context) => {
-            const range = context.document.getSelection();
-      
-            // Add header + data rows
-            const fullTableData = [
-              ['Clause ID', 'Title', 'Description', 'Created By', 'Created On'],
-              ...tableData
-            ];
-      
-            const numRows = fullTableData.length;
-            const numCols = fullTableData[0].length;
-      
-            // Insert empty table first
-            const table = range.insertTable(numRows, numCols, Word.InsertLocation.end);
-      
-            // Assign values
-            table.values = fullTableData;
-      
-            // Style table
-            table.style = 'Grid Table 5 Dark - Accent 1';
-      
-            // Bold header row (first row)
-            const headerRow = table.rows.getFirst();
-            headerRow.font.bold = true;
-      
-            await context.sync();
-            console.log("✅ Table inserted successfully");
-          });
+            await Word.run(async (context) => {
+                const range = context.document.getSelection();
+                const fullTableData = [
+                    ['Clause ID', 'Title', 'Description', 'Created By', 'Created On'],
+                    ...tableData
+                ];
+                const numRows = fullTableData.length;
+                const numCols = fullTableData[0].length;
+                const table = range.insertTable(numRows, numCols, Word.InsertLocation.end);
+                table.values = fullTableData;
+                table.style = 'Grid Table 5 Dark - Accent 1';
+                const headerRow = table.rows.getFirst();
+                headerRow.font.bold = true;
+                await context.sync();
+                console.log("✅ Table inserted successfully");
+                alert("Table inserted into document successfully!"); // Added
+            });
         } catch (error) {
-          console.error("❌ Error inserting table into document:", error);
+            console.error("❌ Error inserting table into document:", error);
+            alert("Failed to insert table: " + error.message); // Added
         }
-      }
+    }
       
       
       
