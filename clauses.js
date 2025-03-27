@@ -239,37 +239,31 @@ Office.onReady(async () => {
             await Word.run(async (context) => {
                 console.log("Copying to Word:", clauses);
                 const body = context.document.body;
-
-                // Insert table with rows and columns
+    
+                // Insert table with rows (clauses.length + 1 for header) and 5 columns
                 const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
-
-                // Set header row and data rows
-                table.values = [
-                    ["Clause ID", "Title", "Description", "Created By", "Created On"],
-                    ...clauses.map(clause => [
+    
+                // Set header row
+                table.values[0] = ["Clause ID", "Title", "Description", "Created By", "Created On"];
+    
+                // Set data rows
+                clauses.forEach((clause, index) => {
+                    table.values[index + 1] = [
                         clause.id || '-',
                         clause.causetitle || '-',
                         clause.cause || '-',
                         clause.crby || '-',
                         clause.cron || '-'
-                    ])
-                ];
-
-                // Apply formatting
-                table.style = "Grid Table 4 - Accent 1";
-                table.getRange().font.size = 10;
-
-                console.log("table",table);
-                console.log("table.values",table.values);
-                // Set column widths manually
-                const columns = table.columns;
-                console.log("columns",columns);
-                columns.items[0].width = 60;  // Clause ID
-                columns.items[1].width = 100; // Title
-                columns.items[2].width = 200; // Description
-                columns.items[3].width = 80;  // Created By
-                columns.items[4].width = 80;  // Created On
-
+                    ];
+                });
+    
+                // Apply basic formatting
+                table.style = "Grid Table 4 - Accent 1"; // Apply a predefined style
+                table.getRange().font.size = 10; // Set font size
+                table.preferredWidth = 520; // Set total width in points (approximate)
+                table.autoFitContent(); // Auto-fit content to adjust column widths
+    
+                // Sync changes to Word document
                 await context.sync();
                 console.log("Table successfully created");
             });
