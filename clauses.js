@@ -223,33 +223,40 @@ Office.onReady(async () => {
     });
 
     async function insertClausesIntoDocument(tableData) {
-    try {
-        await Word.run(async (context) => {
-            const document = context.document;
-            const range = document.getSelection();
-
-            // Insert a table with the correct number of rows and 5 columns
-            const table = range.insertTable(tableData.length + 1, 5, Word.InsertLocation.end);
-
-            // Set the header row
-            const headerRow = table.getRow(0);
-            headerRow.values = [['Clause ID', 'Title', 'Description', 'Created By', 'Created On']];
-
-            // Populate the table with data
-            tableData.forEach((rowData, index) => {
-                const row = table.getRow(index + 1); // Offset by 1 for header
-                row.values = [rowData];
+        try {
+            await Word.run(async (context) => {
+                const document = context.document;
+                const range = document.getSelection();
+    
+                // Insert a table with the correct number of rows (data + header) and 5 columns
+                const table = range.insertTable(tableData.length + 1, 5, Word.InsertLocation.end);
+    
+                // Load the table properties to manipulate it
+                context.load(table, 'values');
+    
+                await context.sync();
+    
+                // Prepare the full table data including the header
+                const fullTableData = [
+                    ['Clause ID', 'Title', 'Description', 'Created By', 'Created On'], // Header row
+                    ...tableData // Spread the data rows
+                ];
+    
+                // Set all table values at once
+                table.values = fullTableData;
+    
+                // Optional: Style the table
+                table.style = 'Grid Table 5 Dark - Accent 1'; // Use string name for built-in style
+                const headerRange = table.getRange('FirstRow'); // Get the header row range
+                context.load(headerRange, 'font');
+                await context.sync();
+                headerRange.font.bold = true; // Bold the header row
+    
+                await context.sync();
+                console.log("Table inserted successfully");
             });
-
-            // Optional: Style the table
-            table.styleBuiltIn = Word.BuiltInStyleName.gridTable5DarkAccent1; // Apply a built-in style
-            table.getHeaderRowRange().font.bold = true; // Bold the header row
-
-            await context.sync();
-            console.log("Table inserted successfully");
-        });
-    } catch (error) {
-        console.error("Error inserting table into document:", error);
-    }
+        } catch (error) {
+            console.error("Error inserting table into document:", error);
+        }
     }
 });
