@@ -245,51 +245,46 @@ Office.onReady(async () => {
             table.style = "Grid Table 4 - Accent 1";
             table.getRange().font.size = 10;
       
-            // Prepare values for the entire table
-            const values = [];
-      
-            // Header row
-            values.push(["Clause ID", "Title", "Description", "Created By", "Created On"]);
-      
-            // Data rows
-            clauses.forEach((clause) => {
-              values.push([
+            // Prepare all values
+            const values = [
+              ["Clause ID", "Title", "Description", "Created By", "Created On"],
+              ...clauses.map(clause => [
                 clause.id || "-",
                 clause.causetitle || "-",
                 clause.cause || "-",
                 clause.crby || "-",
                 clause.cron || "-"
-              ]);
-            });
+              ])
+            ];
       
-            // Apply values to table
             table.getRange().values = values;
       
-            // Optionally set column widths
+            // Column width adjustment – only if available
             try {
               const columns = table.columns;
+              columns.load("items");
               await context.sync();
-              if (columns.items.length === colCount) {
+      
+              if (columns.items && columns.items.length === colCount) {
                 columns.items[0].setWidth(60, Word.WidthUnits.points);
                 columns.items[1].setWidth(100, Word.WidthUnits.points);
                 columns.items[2].setWidth(200, Word.WidthUnits.points);
                 columns.items[3].setWidth(80, Word.WidthUnits.points);
                 columns.items[4].setWidth(80, Word.WidthUnits.points);
+                await context.sync();
+              } else {
+                console.warn("Column widths not available, skipping adjustment.");
               }
             } catch (colError) {
-              console.warn("Column width adjustment failed:", colError);
-              table.autoFitContents();
+              console.warn("Column width adjustment failed:", colError.message);
+              // No fallback needed
             }
       
-            await context.sync();
-            console.log("Table inserted successfully.");
+            console.log("✅ Table inserted successfully.");
           });
         } catch (error) {
-          console.error("Error copying to Word:", error);
-          // Avoid alert on Word Web, use console or custom UI message instead
-          if (Office.context.requirements.isSetSupported("WordApi", "1.3")) {
-            console.log("Show error in UI: " + error.message);
-          }
+          console.error("❌ Error copying to Word:", error);
+          // Optionally show UI error
         }
       }
     // Simple Format
