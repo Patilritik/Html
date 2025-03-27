@@ -114,195 +114,62 @@ Office.onReady(async () => {
         proceedBtn.disabled = !(departmentSelect.value && agreementTypeSelect.value);
     }
     
-    // Table format
-    // async function copyToWord(clauses) {
-    //     try {
-    //         await Word.run(async (context) => {
-    //             console.log("Copying to Word:", clauses);
-    //             const body = context.document.body;
-                
-    //             // Insert table with rows and columns
-    //             const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
-                
-    //             // Load table properties
-    //             table.load("values, style, columns");
-
-    //             await context.sync();
-
-    //             // Set header row
-    //             table.values[0] = ["Clause ID", "Title", "Description", "Created By", "Created On"];
-
-    //             // Set data rows
-    //             clauses.forEach((clause, index) => {
-    //                 table.values[index + 1] = [
-    //                     clause.id || '-',
-    //                     clause.causetitle || '-',
-    //                     clause.cause || '-',
-    //                     clause.crby || '-',
-    //                     clause.cron || '-'
-    //                 ];
-    //             });
-    //             console.log("table",table);
-    //             console.log("table.values",table.values);
-    //             // Apply formatting
-    //             table.style = "Grid Table 4 - Accent 1";
-    //             table.getRange().font.size = 10;
-
-    //             // Set column widths (in points)
-    //             const columns = table.columns;
-    //             console.log("columns",columns);
-    //             console.log("columns.items",columns.items);
-    //             console.log("columns.items[0]",columns.items[0]);
-    //             columns.items[0].setWidth(60, Word.WidthUnits.points);  // Clause ID
-    //             columns.items[1].setWidth(100, Word.WidthUnits.points); // Title
-    //             columns.items[2].setWidth(200, Word.WidthUnits.points); // Description
-    //             columns.items[3].setWidth(80, Word.WidthUnits.points);  // Created By
-    //             columns.items[4].setWidth(80, Word.WidthUnits.points);  // Created On
-
-    //             await context.sync();
-    //         });
-    //     } catch (error) {
-    //         console.error("Error copying to Word:", error);
-    //         alert("Error copying to Word document: " + error.message);
-    //     }
-    // }
-
-    // Checking Table format
-    // async function copyToWord(clauses) {
-    //     try {
-    //         await Word.run(async (context) => {
-    //             console.log("Copying to Word:", clauses);
-    //             const body = context.document.body;
-                
-    //             // Insert table with rows and columns
-    //             const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
-                
-    //             // Load table properties
-    //             table.load("values, style, columns");
-
-    //             await context.sync();
-
-    //             // Set header row
-    //             table.values[0] = ["Clause ID", "Title", "Description", "Created By", "Created On"];
-
-    //             // Set data rows
-    //             clauses.forEach((clause, index) => {
-    //                 table.values[index + 1] = [
-    //                     clause.id || '-',
-    //                     clause.causetitle || '-',
-    //                     clause.cause || '-',
-    //                     clause.crby || '-',
-    //                     clause.cron || '-'
-    //                 ];
-    //             });
-    //             console.log("table",table);
-    //             console.log("table.values",table.values);
-    //             // Apply formatting
-    //             table.style = "Grid Table 4 - Accent 1";
-    //             table.getRange().font.size = 10;
-
-    //             // Try to set column widths
-    //         try {
-    //             const columns = table.columns;
-    //             table.load("columns"); // Explicitly load columns
-    //             await context.sync(); // Sync again to ensure columns are available
-    //             console.log("Columns loaded:", columns);
-                
-    //             if (columns && columns.items && columns.items.length > 0) {
-    //                 columns.items[0].setWidth(60, Word.WidthUnits.points);  // Clause ID
-    //                 columns.items[1].setWidth(100, Word.WidthUnits.points); // Title
-    //                 columns.items[2].setWidth(200, Word.WidthUnits.points); // Description
-    //                 columns.items[3].setWidth(80, Word.WidthUnits.points);  // Created By
-    //                 columns.items[4].setWidth(80, Word.WidthUnits.points);  // Created On
-    //             } else {
-    //                 console.warn("Columns not available, skipping width adjustment");
-    //             }
-    //         } catch (colError) {
-    //             console.warn("Column width adjustment failed:", colError);
-    //             // Fallback: Use table preferred width and auto-fit
-    //             table.preferredWidth = 520; // Total width in points (60 + 100 + 200 + 80 + 80)
-    //             table.autoFitContent();
-    //         }
-
-    //         await context.sync();
-    //         console.log("Table successfully created");
-    //         });
-    //     } catch (error) {
-    //         console.error("Error copying to Word:", error);
-    //         alert("Error copying to Word document: " + error.message);
-    //     }
-    // }
-
-
     async function copyToWord(clauses) {
         try {
             await Word.run(async (context) => {
-                console.log("Copying to Word:", clauses);
                 const body = context.document.body;
+                const rowCount = clauses.length + 1;
+                const colCount = 5;
     
-                // Insert table with rows (clauses.length + 1 for header) and 5 columns
-                const table = body.insertTable(clauses.length + 1, 5, Word.InsertLocation.end);
+                const table = body.insertTable(rowCount, colCount, Word.InsertLocation.end);
+                table.style = "Grid Table 4 - Accent 1";
+                table.getRange().font.size = 10;
     
-                // Set header row
-                table.values[0] = ["Clause ID", "Title", "Description", "Created By", "Created On"];
-    
-                // Set data rows
-                clauses.forEach((clause, index) => {
-                    table.values[index + 1] = [
-                        clause.id || '-',
-                        clause.causetitle || '-',
-                        clause.cause || '-',
-                        clause.crby || '-',
-                        clause.cron || '-'
-                    ];
+                // Set headers
+                const headers = ["Clause ID", "Title", "Description", "Created By", "Created On"];
+                headers.forEach((header, colIndex) => {
+                    table.getCell(0, colIndex).insertText(header, Word.InsertLocation.replace);
                 });
     
-                // Apply basic formatting
-                table.style = "Grid Table 4 - Accent 1"; // Apply a predefined style
-                table.getRange().font.size = 10; // Set font size
-                table.preferredWidth = 520; // Set total width in points (approximate)
-                table.autoFitContent(); // Auto-fit content to adjust column widths
+                // Set clause data
+                clauses.forEach((clause, rowIndex) => {
+                    const data = [
+                        clause.id || "-",
+                        clause.causetitle || "-",
+                        clause.cause || "-",
+                        clause.crby || "-",
+                        clause.cron || "-"
+                    ];
     
-                // Sync changes to Word document
+                    data.forEach((text, colIndex) => {
+                        table.getCell(rowIndex + 1, colIndex).insertText(text, Word.InsertLocation.replace);
+                    });
+                });
+    
+                // Set column widths (optional)
+                try {
+                    const columns = table.columns;
+                    await context.sync();
+                    if (columns.items.length === colCount) {
+                        columns.items[0].setWidth(60, Word.WidthUnits.points);
+                        columns.items[1].setWidth(100, Word.WidthUnits.points);
+                        columns.items[2].setWidth(200, Word.WidthUnits.points);
+                        columns.items[3].setWidth(80, Word.WidthUnits.points);
+                        columns.items[4].setWidth(80, Word.WidthUnits.points);
+                    }
+                } catch (colError) {
+                    console.warn("Column width adjustment failed:", colError);
+                    table.autoFitContents();
+                }
+    
                 await context.sync();
-                console.log("Table successfully created");
             });
         } catch (error) {
             console.error("Error copying to Word:", error);
             alert("Error copying to Word document: " + error.message);
         }
     }
-    // Simple Format
-    // async function copyToWord(clauses) {
-    //     try {
-    //         await Word.run(async (context) => {
-    //             console.log("Copying to Word:", clauses);
-    //             const body = context.document.body;
     
-    //             // Insert header as a paragraph
-    //             body.insertParagraph("Clause ID | Title | Description | Created By | Created On", Word.InsertLocation.end);
-    //             body.insertParagraph("------------------------------------------------------------", Word.InsertLocation.end);
-    
-    //             // Insert each clause as a paragraph
-    //             clauses.forEach(clause => {
-    //                 const clauseText = `${clause.id || '-'} | ${clause.causetitle || '-'} | ${clause.cause || '-'} | ${clause.crby || '-'} | ${clause.cron || '-'}`;
-    //                 const paragraph = body.insertParagraph(clauseText, Word.InsertLocation.end);
-    //                 paragraph.font.size = 10;
-    //             });
-    
-    //             // Add some spacing at the end
-    //             body.insertParagraph("", Word.InsertLocation.end);
-    
-    //             await context.sync();
-    
-    //             console.log("Data inserted into Word document");
-    //         });
-    //     } catch (error) {
-    //         console.error("Error copying to Word:", error);
-    //         alert("Error copying to Word document: " + error.message);
-    //     }
-    // }
-
     departmentSelect.addEventListener("change", (e) => {
         const deptId = e.target.value;
         if (deptId) {
