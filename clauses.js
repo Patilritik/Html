@@ -262,7 +262,7 @@ Office.onReady(async () => {
             ];
       
             // Apply values to table
-            table.getRange().values = values;
+            table.values = values;
       
             await context.sync();
             console.log("✅ Table ", table, " inserted successfully.");
