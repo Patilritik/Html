@@ -15,15 +15,18 @@ Office.onReady(async () => {
     const status = loginData.status;
     const Token = loginData.Token;
 
-    console.log("Login data:", loginData);
-
     const departmentSelect = document.getElementById("department");
     const agreementTypeSelect = document.getElementById("agreementType");
     const proceedBtn = document.getElementById("proceedBtn");
-    const copyTableBtn = document.getElementById("copyTableBtn");
+    const loader = document.getElementById("loader");
 
-    // Initially hide the copy button until data is available
-    copyTableBtn.style.display = "none";
+    function showLoader() {
+        loader.style.display = "block";
+    }
+
+    function hideLoader() {
+        loader.style.display = "none";
+    }
 
     async function fetchDepartmentList() {
         const apiUrl = `https://lapi.convergelego.com/api/AddLegalAgreement/Departmentlisit?companycode=${ComCode}&status=${status}`;
@@ -38,20 +41,19 @@ Office.onReady(async () => {
             });
 
             const result = await response.json();
-            console.log("Department list response:", result);
             departmentSelect.innerHTML = "";
 
-            if (result.status == 200) {
+            if (result.status === 200) {
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "";
                 defaultOption.textContent = "Select Department";
                 departmentSelect.appendChild(defaultOption);
 
                 const departments = result?.Detail?.data || [];
-                departments.forEach(department => {
+                departments.forEach(dept => {
                     const option = document.createElement("option");
-                    option.value = department.DeptId;
-                    option.textContent = department.DeptName || department.DeptId;
+                    option.value = dept.DeptId;
+                    option.textContent = dept.DeptName;
                     departmentSelect.appendChild(option);
                 });
 
@@ -62,8 +64,8 @@ Office.onReady(async () => {
             } else {
                 departmentSelect.innerHTML = `<option value="">No departments found</option>`;
             }
-        } catch (error) {
-            console.error("Error fetching department list:", error);
+        } catch (err) {
+            console.error("Department fetch error:", err);
             departmentSelect.innerHTML = `<option value="">No departments found</option>`;
         }
     }
@@ -80,28 +82,28 @@ Office.onReady(async () => {
                     "Comcode": ComCode
                 }
             });
+
             const result = await response.json();
-            console.log("Agreement type list:", result);
             agreementTypeSelect.innerHTML = "";
 
-            if (result.status == 200) {
+            if (result.status === 200) {
                 const defaultOption = document.createElement("option");
                 defaultOption.value = "";
                 defaultOption.textContent = "Select Agreement Type";
                 agreementTypeSelect.appendChild(defaultOption);
 
-                const agreementTypes = result?.Detail?.data || [];
-                agreementTypes.forEach(agreement => {
+                const types = result?.Detail?.data || [];
+                types.forEach(ag => {
                     const option = document.createElement("option");
-                    option.value = agreement.Agtypeid;
-                    option.textContent = agreement.AgtypeDesc || agreement.Agtypeid;
+                    option.value = ag.Agtypeid;
+                    option.textContent = ag.AgtypeDesc;
                     agreementTypeSelect.appendChild(option);
                 });
             } else {
                 agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
             }
-        } catch (error) {
-            console.error("Error fetching agreement type list:", error);
+        } catch (err) {
+            console.error("Agreement type fetch error:", err);
             agreementTypeSelect.innerHTML = `<option value="">No agreement types found</option>`;
         }
 
@@ -109,17 +111,13 @@ Office.onReady(async () => {
     }
 
     function updateProceedButtonState() {
-        const deptSelected = departmentSelect.value !== "";
-        const agreementSelected = agreementTypeSelect.value !== "";
-        proceedBtn.disabled = !(deptSelected && agreementSelected);
+        proceedBtn.disabled = !(departmentSelect.value && agreementTypeSelect.value);
     }
 
-    await fetchDepartmentList();
-
-    departmentSelect.addEventListener("change", (event) => {
-        const selectedDeptId = event.target.value;
-        if (selectedDeptId) {
-            fetchAgreementTypeList(selectedDeptId);
+    departmentSelect.addEventListener("change", (e) => {
+        const deptId = e.target.value;
+        if (deptId) {
+            fetchAgreementTypeList(deptId);
         } else {
             agreementTypeSelect.innerHTML = `<option value="">Select a department first</option>`;
             agreementTypeSelect.disabled = true;
@@ -127,20 +125,14 @@ Office.onReady(async () => {
         }
     });
 
-    agreementTypeSelect.addEventListener("change", () => {
-        updateProceedButtonState();
-    });
-
-    let allClauses = []; // Store clauses globally for copying
+    agreementTypeSelect.addEventListener("change", updateProceedButtonState);
 
     proceedBtn.addEventListener("click", async () => {
-        const selectedDeptId = departmentSelect.value;
-        const selectedAgreementId = agreementTypeSelect.value;
-
-        console.log(`Proceeding with Department ID: ${selectedDeptId}, Agreement Type ID: ${selectedAgreementId}`);
-
+        const deptId = departmentSelect.value;
+        const agTypeId = agreementTypeSelect.value;
         const apiUrl = "https://addinapi.convergelego.com/api/CompanyMaster/GetMstCauseLisit";
 
+        showLoader(); // Show loader on Proceed
         try {
             const response = await fetch(apiUrl, {
                 method: "POST",
@@ -152,21 +144,19 @@ Office.onReady(async () => {
                     "Comcode": ComCode
                 },
                 body: JSON.stringify({
-                    deptid: selectedDeptId,
-                    agrid: selectedAgreementId,
+                    deptid: deptId,
+                    agrid: agTypeId,
                     statusid: "1"
                 })
             });
 
             const result = await response.json();
-            console.log("Clauses API response:", result);
-
-            allClauses = result?.Detail?.data || []; // Store clauses for copying
-            renderClausesTable(allClauses);
+            renderClausesTable(result?.Detail?.data || []);
         } catch (error) {
-            console.error("Error fetching clauses:", error);
-            allClauses = [];
+            console.error("Clause fetch error:", error);
             renderClausesTable([]);
+        } finally {
+            hideLoader(); // Hide loader after fetch
         }
     });
 
@@ -177,107 +167,27 @@ Office.onReady(async () => {
         tbody.innerHTML = "";
 
         if (!clauses.length) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">No clauses found.</td></tr>`;
-            copyTableBtn.style.display = "none"; // Hide button if no data
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No clauses found.</td></tr>`;
             container.style.display = "block";
             return;
         }
 
-        clauses.forEach(clause => {
+        clauses.forEach(c => {
             const row = document.createElement("tr");
             row.innerHTML = `
-                <td>${clause.id || '-'}</td>
-                <td>${clause.causetitle || '-'}</td>
-                <td style="white-space: pre-wrap; max-width: 300px;">${clause.cause || '-'}</td>
-                <td>${clause.crby || '-'}</td>
-                <td>${clause.cron || '-'}</td>
-            `;
-            tbody.appendChild(row);
+                <td>${c.id || '-'}</td>
+                <td>${c.causetitle || '-'}</td>
+                <td style="white-space: pre-wrap; max-width: 300px;">${c.cause || '-'}</td>
+                <td>${c.crby || '-'}</td>
+                <td>${c.cron || '-'}</td>
+                `;
+                tbody.appendChild(row);
+                // <td>${c.statusdesc || '-'}</td>
         });
 
         container.style.display = "block";
-        copyTableBtn.style.display = "block"; // Show button only if there is data
     }
 
-    copyTableBtn.addEventListener("click", async () => {
-        if (!allClauses.length) {
-            console.log("No clauses to copy");
-            return;
-        }
-
-        // const textToCopy = allClauses
-        //     .map(clause => `${clause.causetitle || 'Untitled Clause'}\n${clause.cause || '-'}\n`)
-        //     .join("\n"); // Format the text with titles and descriptions
-
-        // Prepare the table data
-    const tableData = allClauses.map(clause => [
-        clause.id || '-',
-        clause.causetitle || '-',
-        clause.cause || '-',
-        clause.crby || '-',
-        clause.cron || '-'
-    ]);
-
-        // await insertClausesIntoDocument(textToCopy);
-        await insertClausesIntoDocument(tableData);
-    });
-
-    async function insertClausesIntoDocument(tableData) {
-        try {
-            await Word.run(async (context) => {
-                // Sanitize tableData to ensure all values are strings
-                const sanitizedTableData = tableData.map(row => 
-                    row.map(value => String(value ?? '-')) // Convert null/undefined to '-' and ensure string
-                );
-    
-                // Define the full table with headers
-                const fullTableData = [
-                    ['Clause ID', 'Title', 'Description', 'Created By', 'Created On'],
-                    ...sanitizedTableData
-                ];
-    
-                // Validate dimensions
-                const numRows = fullTableData.length;
-                const numCols = fullTableData[0].length;
-                console.log(`Inserting table with ${numRows} rows and ${numCols} columns`);
-                console.log("Table data:", fullTableData);
-    
-                // Check that all rows have the same number of columns
-                const isValid = fullTableData.every(row => row.length === numCols);
-                if (!isValid) {
-                    throw new Error("Table data is invalid: Rows have inconsistent column counts.");
-                }
-    
-                // Insert the table at the current selection
-                const range = context.document.getSelection();
-                const table = range.insertTable(numRows, numCols, Word.InsertLocation.end);
-    
-                // Load and set table properties
-                table.load("values");
-                table.values = fullTableData;
-    
-                // Apply styling
-                table.style = 'Grid Table 5 Dark - Accent 1';
-                const headerRow = table.rows.getFirst();
-                headerRow.font.bold = true;
-    
-                // Optional: Adjust column widths for better readability
-                table.getRange().setColumnWidth(150); // Set to 150 points, adjust as needed
-    
-                // Sync changes to the document
-                await context.sync();
-                console.log("✅ Table inserted successfully");
-                alert("Table inserted into document successfully!");
-            });
-        } catch (error) {
-            console.error("❌ Error inserting table into document:", error);
-            if (error.debugInfo) {
-                console.log("Debug Info:", error.debugInfo);
-            }
-            alert("Failed to insert table: " + error.message);
-        }
-    }
-      
-      
-      
+    // Initial fetch
+    await fetchDepartmentList();
 });
