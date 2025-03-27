@@ -227,18 +227,25 @@ Office.onReady(async () => {
           await Word.run(async (context) => {
             const range = context.document.getSelection();
       
+            // Add header + data rows
             const fullTableData = [
               ['Clause ID', 'Title', 'Description', 'Created By', 'Created On'],
               ...tableData
             ];
       
-            const table = range.insertTable(fullTableData.length, 5, Word.InsertLocation.end);
+            const numRows = fullTableData.length;
+            const numCols = fullTableData[0].length;
+      
+            // Insert empty table first
+            const table = range.insertTable(numRows, numCols, Word.InsertLocation.end);
+      
+            // Assign values
             table.values = fullTableData;
       
-            // Style the table
+            // Style table
             table.style = 'Grid Table 5 Dark - Accent 1';
       
-            // Bold the first row (header row)
+            // Bold header row (first row)
             const headerRow = table.rows.getFirst();
             headerRow.font.bold = true;
       
@@ -249,6 +256,7 @@ Office.onReady(async () => {
           console.error("❌ Error inserting table into document:", error);
         }
       }
+      
       
       
 });
