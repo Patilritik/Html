@@ -116,30 +116,36 @@ Office.onReady(async () => {
 
     async function copyToWord(clause) {
         try {
-          await Word.run(async (context) => {
-            const body = context.document.body;
-      
-            const title = clause?.causetitle || "Untitled Clause";
-            const desc = clause?.cause || "-";
-      
-            // Insert title
-            const titlePara = body.insertParagraph(title, Word.InsertLocation.end);
-            titlePara.font.bold = true;
-            titlePara.font.size = 14;
-            titlePara.spacingAfter = 6;
-      
-            // Insert description
-            const descPara = body.insertParagraph(desc, Word.InsertLocation.end);
-            descPara.font.size = 12;
-            descPara.spacingAfter = 12;
-      
-            await context.sync();
-            console.log("✅ Inserted clause:", title);
-          });
+            await Word.run(async (context) => {
+                const body = context.document.body;
+
+                const titleText = clause?.causetitle || "Untitled Clause";
+                const descText = clause?.cause || "-";
+
+                // Title Line: "Title - My Clause Title"
+                const titlePara = body.insertParagraph(Title - `${titleText}`, Word.InsertLocation.end);
+                titlePara.font.bold = true;
+                titlePara.font.size = 14;
+                titlePara.spacingAfter = 6;
+
+                // Description Heading
+                const descHeading = body.insertParagraph("Description -", Word.InsertLocation.end);
+                descHeading.font.bold = true;
+                descHeading.font.size = 14;
+                descHeading.spacingAfter = 2;
+
+                // Description Text
+                const descPara = body.insertParagraph(descText, Word.InsertLocation.end);
+                descPara.font.size = 14;
+                descPara.spacingAfter = 20;
+
+                await context.sync();
+                console.log("✅ Inserted:", titleText);
+            });
         } catch (error) {
-          console.error("❌ Error copying to Word:", error.message || error);
+            console.error("❌ Error inserting clause:", error.message || error);
         }
-      }
+    }
       
     departmentSelect.addEventListener("change", (e) => {
         const deptId = e.target.value;
