@@ -200,11 +200,6 @@ Office.onReady(async () => {
             const card = document.createElement("div");
             card.className = "card";
 
-            const copyBtn = document.createElement("button");
-            copyBtn.className = "copy-btn";
-            copyBtn.innerText = "Copy";
-            copyBtn.addEventListener("click", () => copyToWord(clause));
-
             const titleSpan = document.createElement("span");
             titleSpan.className = "title-span";
             titleSpan.innerText = clause.causetitle || "-";
@@ -213,9 +208,14 @@ Office.onReady(async () => {
             descSpan.className = "description-span";
             descSpan.innerText = clause.cause || "-";
 
-            card.appendChild(copyBtn);
+            const copyBtn = document.createElement("button");
+            copyBtn.className = "copy-btn";
+            copyBtn.innerText = "Copy";
+            copyBtn.addEventListener("click", () => copyToWord(clause));
+
             card.appendChild(titleSpan);
             card.appendChild(descSpan);
+            card.appendChild(copyBtn);
             container.appendChild(card);
         });
 
