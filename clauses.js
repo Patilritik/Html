@@ -116,64 +116,49 @@ Office.onReady(async () => {
 
     async function copyToWord(clause) {
         try {
-          await Word.run(async (context) => {
-            const body = context.document.body;
-      
-            const title = clause?.causetitle || "Untitled Clause";
-            const desc = clause?.cause || "-";
-      
-            // Insert Title paragraph and split formatting
-            const titlePara = body.insertParagraph("", Word.InsertLocation.end);
-            const titleRange = titlePara.insertText("Title - ", Word.InsertLocation.start);
-            titleRange.font.bold = true;
-            titleRange.font.size = 14;
-      
-            const titleTextRange = titlePara.insertText(title, Word.InsertLocation.end);
-            titleTextRange.font.bold = false;
-            titleTextRange.font.size = 14;
-      
-            // Insert Description label
-            const descLabelPara = body.insertParagraph("", Word.InsertLocation.end);
-            const descLabelRange = descLabelPara.insertText("Description -", Word.InsertLocation.start);
-            descLabelRange.font.bold = true;
-            descLabelRange.font.size = 14;
-      
-            // Insert Description value
-            const descPara = body.insertParagraph(desc, Word.InsertLocation.end);
-            descPara.font.size = 14;
-            descPara.font.bold = false;
-            descPara.spacingAfter = 20;
-      
-            await context.sync();
-            console.log("✅ Inserted:", title);
-          });
-        } catch (error) {
-          console.error("❌ Error inserting clause:", error.message || error);
-        }
-      }
-      
-    departmentSelect.addEventListener("change", (e) => {
-        const deptId = e.target.value;
-        if (deptId) {
-            fetchAgreementTypeList(deptId);
-        } else {
-            agreementTypeSelect.innerHTML = `<option value="">Select a department first</option>`;
-            agreementTypeSelect.disabled = true;
-            proceedBtn.disabled = true;
-        }
-    });
+            await Word.run(async (context) => {
+                const body = context.document.body;
 
-    agreementTypeSelect.addEventListener("change", updateProceedButtonState);
+                const title = clause?.causetitle || "Untitled Clause";
+                const desc = clause?.cause || "-";
+
+                const titlePara = body.insertParagraph("", Word.InsertLocation.end);
+                const titleRange = titlePara.insertText("Title - ", Word.InsertLocation.start);
+                titleRange.font.bold = true;
+                titleRange.font.size = 14;
+
+                const titleTextRange = titlePara.insertText(title, Word.InsertLocation.end);
+                titleTextRange.font.bold = false;
+                titleTextRange.font.size = 14;
+
+                const descLabelPara = body.insertParagraph("", Word.InsertLocation.end);
+                const descLabelRange = descLabelPara.insertText("Description -", Word.InsertLocation.start);
+                descLabelRange.font.bold = true;
+                descLabelRange.font.size = 14;
+
+                const descPara = body.insertParagraph(desc, Word.InsertLocation.end);
+                descPara.font.size = 14;
+                descPara.font.bold = false;
+                descPara.spacingAfter = 20;
+
+                await context.sync();
+                console.log("✅ Inserted:", title);
+            });
+        } catch (error) {
+            console.error("❌ Error inserting clause:", error.message || error);
+        }
+    }
 
     proceedBtn.addEventListener("click", async () => {
         const deptId = departmentSelect.value;
         const agTypeId = agreementTypeSelect.value;
         const apiUrl = "https://addinapi.convergelego.com/api/CompanyMaster/GetMstCauseLisit";
-        const copyBtn = document.getElementById("copyToWordBtn");
+
+        const container = document.getElementById("clausesCardContainer");
 
         showLoader();
-        copyBtn.style.display = "none"; // Hide button before fetching new data
-        
+        container.style.display = "none";
+
         try {
             const response = await fetch(apiUrl, {
                 method: "POST",
@@ -202,45 +187,53 @@ Office.onReady(async () => {
     });
 
     function renderClausesTable(clauses) {
-        const container = document.getElementById("clausesTableContainer");
-        const tbody = document.getElementById("clausesTableBody");
-        const thead = document.querySelector("#clausesTable thead");
-      
-        // Set custom table headers
-        thead.innerHTML = `
-          <tr>
-            <th>Sr No.</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        `;
-      
-        tbody.innerHTML = "";
-      
+        const container = document.getElementById("clausesCardContainer");
+        container.innerHTML = "";
+
         if (!clauses.length) {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No clauses found.</td></tr>`;
-          container.style.display = "block";
-          return;
+            container.innerHTML = `<p style="text-align:center;">No clauses found.</p>`;
+            container.style.display = "block";
+            return;
         }
-      
-        clauses.forEach((c, index) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${c.causetitle || '-'}</td>
-            <td style="white-space: pre-wrap; max-width: 300px;">${c.cause || '-'}</td>
-            <td><button id="copyBtn-${index}">Copy</button></td>
-          `;
-          tbody.appendChild(row);
-      
-          const button = row.querySelector(`#copyBtn-${index}`);
-          button.addEventListener("click", () => copyToWord(c));
+
+        clauses.forEach((clause, index) => {
+            const card = document.createElement("div");
+            card.className = "card";
+
+            const copyBtn = document.createElement("button");
+            copyBtn.className = "copy-btn";
+            copyBtn.innerText = "Copy";
+            copyBtn.addEventListener("click", () => copyToWord(clause));
+
+            const titleSpan = document.createElement("span");
+            titleSpan.className = "title-span";
+            titleSpan.innerText = clause.causetitle || "-";
+
+            const descSpan = document.createElement("span");
+            descSpan.className = "description-span";
+            descSpan.innerText = clause.cause || "-";
+
+            card.appendChild(copyBtn);
+            card.appendChild(titleSpan);
+            card.appendChild(descSpan);
+            container.appendChild(card);
         });
-      
+
         container.style.display = "block";
-      }
-      
+    }
+
+    departmentSelect.addEventListener("change", (e) => {
+        const deptId = e.target.value;
+        if (deptId) {
+            fetchAgreementTypeList(deptId);
+        } else {
+            agreementTypeSelect.innerHTML = `<option value="">Select a department first</option>`;
+            agreementTypeSelect.disabled = true;
+            proceedBtn.disabled = true;
+        }
+    });
+
+    agreementTypeSelect.addEventListener("change", updateProceedButtonState);
 
     // Initial fetch
     await fetchDepartmentList();

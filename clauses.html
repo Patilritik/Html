@@ -15,9 +15,8 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background-color: #ecf0f1;
       padding: 16px;
+      background-color: #ecf0f1;
     }
 
     .container {
@@ -85,39 +84,47 @@
     }
 
     @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    #clausesTableContainer {
+    #clausesCardContainer {
       margin-top: 30px;
       display: none;
     }
 
-    table {
-      width: 100%;
-      background-color: #fff;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 15px;
-    }
-
-    th,
-    td {
-      padding: 10px;
-      border: 1px solid #ccc;
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
       text-align: left;
-      vertical-align: top;
+      background: #ffffff;
+      padding: 15px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 370px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
     }
 
-    th {
-      background-color: #3498db;
-      color: white;
+    .card .copy-btn {
+      font-size: 12px;
+      padding: 5px 7px;
+      position: absolute;
+      right: 20px;
+      top: 2px;
+      cursor: pointer;
+    }
+
+    .card .title-span {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .card .description-span {
+      font-size: 15px;
+      white-space: pre-wrap;
     }
   </style>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
@@ -144,24 +151,8 @@
 
     <div class="loader" id="loader"></div>
 
-    <div id="clausesTableContainer">
-      <h3>Clauses List</h3>
-      <table id="clausesTable">
-        <thead>
-          <tr>
-            <th>Clause ID</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Created By</th>
-            <th>Created On</th>
-          </tr>
-        </thead>
-        <tbody id="clausesTableBody">
-          <!-- Rows will be inserted here -->
-        </tbody>
-      </table>
-      <button id="copyToWordBtn" style="display: none; margin-bottom: 10px;">Copy to Word</button>
-    </div>
+    <!-- NEW: Cards will render here -->
+    <div id="clausesCardContainer"></div>
   </div>
   <script src="clauses.js"></script>
 </body>
