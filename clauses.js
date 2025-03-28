@@ -123,7 +123,7 @@ Office.onReady(async () => {
                 const descText = clause?.cause || "-";
 
                 // Title Line: "Title - My Clause Title"
-                const titlePara = body.insertParagraph(Title - `${titleText}`, Word.InsertLocation.end);
+                const titlePara = body.insertParagraph(`Title - ${titleText}`, Word.InsertLocation.end);
                 titlePara.font.bold = true;
                 titlePara.font.size = 14;
                 titlePara.spacingAfter = 6;
