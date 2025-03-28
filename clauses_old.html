@@ -3,31 +3,48 @@
 <head>
   <title>Clauses</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+    * {
+      font-family: "Inter", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 300;
+      font-style: normal;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       background-color: #ecf0f1;
+      padding: 16px;
     }
+
     .container {
-      max-width: 600px;
+      max-width: 400px;
       margin: 20px auto;
-      padding: 20px;
       text-align: center;
     }
+
     h2 {
-      color: #2c3e50;
+      color: #435261;
+      font-size: 22px;
+      margin: 30px 0;
+      font-weight: 500;
     }
+
     .form-group {
       margin-bottom: 15px;
       text-align: left;
     }
+
     label {
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
       color: #34495e;
     }
+
     select {
       width: 100%;
       padding: 10px;
@@ -36,6 +53,7 @@
       font-size: 16px;
       box-sizing: border-box;
     }
+
     button {
       background-color: #2980b9;
       color: white;
@@ -45,32 +63,61 @@
       cursor: pointer;
       margin-top: 10px;
     }
+
     button:hover {
       background-color: #1f6391;
     }
+
     button:disabled {
       background-color: #95a5a6;
       cursor: not-allowed;
     }
-    #userInfo {
-      margin-bottom: 20px;
-      text-align: left;
-      padding: 10px;
+
+    .loader {
+      display: none;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 15px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    #clausesTableContainer {
+      margin-top: 30px;
+      display: none;
+    }
+
+    table {
+      width: 100%;
       background-color: #fff;
-      border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .status {
+      border-collapse: collapse;
       margin-top: 10px;
-      color: #e74c3c;
-      font-size: 14px;
+      font-size: 15px;
     }
-    #copyTableBtn {
+
+    th,
+    td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
       background-color: #3498db;
-      margin-top: 20px;
-    }
-    #copyTableBtn:hover {
-      background-color: #2980b9;
+      color: white;
     }
   </style>
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
@@ -84,7 +131,6 @@
       <select id="department">
         <option value="">Loading departments...</option>
       </select>
-      <div id="departmentStatus" class="status"></div>
     </div>
 
     <div class="form-group">
@@ -92,28 +138,30 @@
       <select id="agreementType" disabled>
         <option value="">Select a department first</option>
       </select>
-      <div id="agreementStatus" class="status"></div>
     </div>
 
     <button id="proceedBtn" disabled>Proceed</button>
 
-    <div id="clausesTableContainer" style="margin-top: 30px; display: none;">
+    <div class="loader" id="loader"></div>
+
+    <div id="clausesTableContainer">
       <h3>Clauses List</h3>
-      <table id="clausesTable" border="1" cellpadding="10" cellspacing="0" style="width: 100%; background-color: #fff; border-collapse: collapse; margin-top: 10px;">
+      <table id="clausesTable">
         <thead>
-          <tr style="background-color: #3498db; color: white;">
+          <tr>
             <th>Clause ID</th>
             <th>Title</th>
             <th>Description</th>
+            <!-- <th>Status</th> -->
             <th>Created By</th>
             <th>Created On</th>
           </tr>
         </thead>
         <tbody id="clausesTableBody">
-          <!-- Dynamic rows will be added here -->
+          <!-- Rows will be inserted here -->
         </tbody>
       </table>
-      <button id="copyTableBtn" style="display: none;">Copy All Clauses</button>
+      <button id="copyToWordBtn" style="display: none; margin-bottom: 10px;">Copy to Word</button>
     </div>
   </div>
   <script src="clauses.js"></script>
