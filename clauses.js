@@ -116,36 +116,41 @@ Office.onReady(async () => {
 
     async function copyToWord(clause) {
         try {
-            await Word.run(async (context) => {
-                const body = context.document.body;
-
-                const titleText = clause?.causetitle || "Untitled Clause";
-                const descText = clause?.cause || "-";
-
-                // Title Line: "Title - My Clause Title"
-                const titlePara = body.insertParagraph(`Title - ${titleText}`, Word.InsertLocation.end);
-                titlePara.font.bold = true;
-                titlePara.font.size = 14;
-                titlePara.spacingAfter = 6;
-
-                // Description Heading
-                const descHeading = body.insertParagraph("Description -", Word.InsertLocation.end);
-                descHeading.font.bold = true;
-                descHeading.font.size = 14;
-                descHeading.spacingAfter = 2;
-
-                // Description Text
-                const descPara = body.insertParagraph(descText, Word.InsertLocation.end);
-                descPara.font.size = 14;
-                descPara.spacingAfter = 20;
-
-                await context.sync();
-                console.log("✅ Inserted:", titleText);
-            });
+          await Word.run(async (context) => {
+            const body = context.document.body;
+      
+            const title = clause?.causetitle || "Untitled Clause";
+            const desc = clause?.cause || "-";
+      
+            // Insert Title paragraph and split formatting
+            const titlePara = body.insertParagraph("", Word.InsertLocation.end);
+            const titleRange = titlePara.insertText("Title - ", Word.InsertLocation.start);
+            titleRange.font.bold = true;
+            titleRange.font.size = 14;
+      
+            const titleTextRange = titlePara.insertText(title, Word.InsertLocation.end);
+            titleTextRange.font.bold = false;
+            titleTextRange.font.size = 14;
+      
+            // Insert Description label
+            const descLabelPara = body.insertParagraph("", Word.InsertLocation.end);
+            const descLabelRange = descLabelPara.insertText("Description -", Word.InsertLocation.start);
+            descLabelRange.font.bold = true;
+            descLabelRange.font.size = 14;
+      
+            // Insert Description value
+            const descPara = body.insertParagraph(desc, Word.InsertLocation.end);
+            descPara.font.size = 14;
+            descPara.font.bold = false;
+            descPara.spacingAfter = 20;
+      
+            await context.sync();
+            console.log("✅ Inserted:", title);
+          });
         } catch (error) {
-            console.error("❌ Error inserting clause:", error.message || error);
+          console.error("❌ Error inserting clause:", error.message || error);
         }
-    }
+      }
       
     departmentSelect.addEventListener("change", (e) => {
         const deptId = e.target.value;
