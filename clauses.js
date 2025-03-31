@@ -115,35 +115,32 @@ Office.onReady(async () => {
     }
 
     async function copyToWord(clause) {
-        const confirmInsert = confirm("Do you want to add this clause in Word?");
-        if (!confirmInsert) return;
-    
         try {
             await Word.run(async (context) => {
                 const body = context.document.body;
-    
+
                 const title = clause?.causetitle || "Untitled Clause";
                 const desc = clause?.cause || "-";
-    
+
                 const titlePara = body.insertParagraph("", Word.InsertLocation.end);
                 const titleRange = titlePara.insertText("Title - ", Word.InsertLocation.start);
                 titleRange.font.bold = true;
                 titleRange.font.size = 14;
-    
+
                 const titleTextRange = titlePara.insertText(title, Word.InsertLocation.end);
                 titleTextRange.font.bold = false;
                 titleTextRange.font.size = 14;
-    
+
                 const descLabelPara = body.insertParagraph("", Word.InsertLocation.end);
                 const descLabelRange = descLabelPara.insertText("Description -", Word.InsertLocation.start);
                 descLabelRange.font.bold = true;
                 descLabelRange.font.size = 14;
-    
+
                 const descPara = body.insertParagraph(desc, Word.InsertLocation.end);
                 descPara.font.size = 14;
                 descPara.font.bold = false;
                 descPara.spacingAfter = 20;
-    
+
                 await context.sync();
                 console.log("✅ Inserted:", title);
             });
@@ -151,7 +148,6 @@ Office.onReady(async () => {
             console.error("❌ Error inserting clause:", error.message || error);
         }
     }
-    
 
     proceedBtn.addEventListener("click", async () => {
         const deptId = departmentSelect.value;
@@ -211,7 +207,7 @@ Office.onReady(async () => {
             const descSpan = document.createElement("span");
             descSpan.className = "description-span";
             const fullText = clause.cause || "-";
-            const shortText = fullText.split(" ").length > 70 ? fullText.split(" ").slice(0, 70).join(" ") + "..." : fullText;
+            const shortText = fullText.split(" ").length > 50 ? fullText.split(" ").slice(0, 50).join(" ") + "..." : fullText;
             descSpan.innerText = shortText;
 
             const copyBtn = document.createElement("button");
