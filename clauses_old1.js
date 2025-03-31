@@ -191,7 +191,7 @@ Office.onReady(async () => {
         container.innerHTML = "";
 
         if (!clauses.length) {
-            container.innerHTML = `<p style="text-align:center;">No clause found.</p>`;
+            container.innerHTML = `<p style="text-align:center;">No clauses found.</p>`;
             container.style.display = "block";
             return;
         }
@@ -206,13 +206,11 @@ Office.onReady(async () => {
 
             const descSpan = document.createElement("span");
             descSpan.className = "description-span";
-            const fullText = clause.cause || "-";
-            const shortText = fullText.split(" ").length > 50 ? fullText.split(" ").slice(0, 50).join(" ") + "..." : fullText;
-            descSpan.innerText = shortText;
+            descSpan.innerText = clause.cause || "-";
 
             const copyBtn = document.createElement("button");
             copyBtn.className = "copy-btn";
-            copyBtn.innerText = "Add to Word";
+            copyBtn.innerText = "Copy";
             copyBtn.addEventListener("click", () => copyToWord(clause));
 
             card.appendChild(titleSpan);
