@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Clauses</title>
+  <style>
+    body {
+      background-color: #ecf0f1;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      text-align: center;
+    }
+    h2 {
+      color: #2c3e50;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #2980b9 ;
+    }
+  </style>
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>AI Clauses</h2>
+    <input type="text" id="searchInput" placeholder="Search..." />
+    <button id="searchButton">Search</button>
+  </div>
+  <script src="aiclauses.js"></script>
+</body>
+</html>
+
+
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+           xsi:type="TaskPaneApp">
+
+  <Id>d077e271-66bd-457a-af8e-31328595ec78</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>VPPL</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="ConvergeLego Add-in" />
+  <Description DefaultValue="Inserts clauses and AI-generated content into a Word document." />
+  <IconUrl DefaultValue="https://cdn-icons-png.flaticon.com/512/5436/5436637.png"/>
+
+
+  <AppDomains>
+    <AppDomain>https://html-zqoo.vercel.app</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Document" />
+  </Hosts>
+
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://html-zqoo.vercel.app/index.html"/>
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Document">
+        <DesktopFormFactor>
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="TabConvergeLego">
+              <Group id="ConvergeLegoGroup">
+                <Label resid="Group.Label"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+
+                <!-- Clauses Button -->
+                <!-- <Control xsi:type="Button" id="ShowClausesButton">
+                  <Label resid="ClausesButton.Label"/>
+                  <Supertip>
+                    <Title resid="ClausesButton.Label"/>
+                    <Description resid="ClausesButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>ClausesTaskpane</TaskpaneId>
+                    <SourceLocation resid="Clauses.Url"/>
+                  </Action>
+                </Control>
+
+                <!-- AI Clauses Button -->
+                <Control xsi:type="Button" id="ShowAIClausesButton">
+                  <Label resid="AIClausesButton.Label"/>
+                  <Supertip>
+                    <Title resid="AIClausesButton.Label"/>
+                    <Description resid="AIClausesButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>AIClausesTaskpane</TaskpaneId>
+                    <SourceLocation resid="AIClauses.Url"/>
+                  </Action>
+                </Control>
+
+              </Group>
+              <Label resid="Tab.Label"/>
+            </CustomTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="https://cdn-icons-png.flaticon.com/32/25/25231.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://cdn-icons-png.flaticon.com/32/25/25231.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://cdn-icons-png.flaticon.com/32/25/25231.png"/>
+      </bt:Images>
+
+      <bt:Urls>
+        <bt:Url id="Clauses.Url" DefaultValue="https://html-zqoo.vercel.app/clauses.html"/>
+        <bt:Url id="AIClauses.Url" DefaultValue="https://html-zqoo.vercel.app/aiclauses.html"/>
+      </bt:Urls>
+
+      <bt:ShortStrings>
+        <bt:String id="Group.Label" DefaultValue="ConvergeLego Group"/>
+        <bt:String id="ClausesButton.Label" DefaultValue="Clauses"/>
+        <bt:String id="AIClausesButton.Label" DefaultValue="AI Clauses"/>
+        <bt:String id="Tab.Label" DefaultValue="Converge ADDINS"/>
+      </bt:ShortStrings>
+
+      <bt:LongStrings>
+        <bt:String id="ClausesButton.Tooltip" DefaultValue="Insert manual clauses into the document."/>
+        <bt:String id="AIClausesButton.Tooltip" DefaultValue="Insert AI-generated clauses into the document."/>
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>  -->
